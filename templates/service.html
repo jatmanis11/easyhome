@@ -1,0 +1,91 @@
+{% extends "common.html" %}
+{% block body %}
+{% for service in services %}
+<div>
+   {{ serv}}
+</div>
+{% endfor %}
+{{services}}
+<div  style="height: 5%; margin-top: 3%; padding-left: 80%;" > <button style="padding: 7px 20px; font-size: 18px; border-radius: 8px; background-color: #007bff; cursor: pointer;" onclick="location.href='/service/add';">
+     Add new service </button></div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Service Name</th>
+            <th>Description</th>
+            <th>Base Price</th>
+            <th>Time needed</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for service in serv %}
+    <tr>
+      <td> {{service.service_name}}</td> 
+      <td> {{service.service_desc}}</td> 
+      <td> {{service.service_b_price}}</td> 
+      <td> {{service.time_required}}</td> 
+      <!-- <td><button type="">delete</button></td> -->
+      <td><form action="/service" method="POST">
+        <button name="del" value="{{service.service_id}}" type="submit">Delete</button></td>
+      <td><form action="/service" method="POST">
+        <button name="edit1" value="{{service.service_id}}" type="submit">Edit</button></td>
+       </tr>
+{% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
+
+    <style>
+        body, h1, p, form {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background: antiquewhite;
+    }
+    
+    tr:hover {
+        background-color: #d1d8e0;
+    }
+    button:hover {
+        background-color: #1a64b9;
+    }
+
+    table {
+        width: 60%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        font-size: 18px;
+    }
+
+    table, th, td {
+        border: 1px solid #bdc3c7;
+    }
+
+    th {
+        background-color: #3498db;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+    td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: #ecf0f1;
+    }
+
+    tr:hover {
+        background-color: #d1d8e0;
+    }
+
+    td, th {
+        border-radius: 5px;
+    }
+    </style>
+{% endblock %}

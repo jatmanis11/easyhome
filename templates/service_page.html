@@ -1,0 +1,107 @@
+{% extends "common.html" %}
+{% block body %}
+<div style=" margin-left: 10%; ">
+
+    <div style="text-align: center; font-size: 250%; color: rgb(155, 9, 9); font-weight: bold;">
+         {{services.service_name}}</div>
+    <!-- <div style="font-size: 150%; color: rgb(15, 15, 19);"> Welcome To EasyHome Dashboard</div> -->
+    <div class="service-title">{{services.service_name}}</div>
+    <div class="service-desc">{{services.service_desc}}</div>
+    <div class="service-desc">{{services.service_b_price}}</div>
+    <div class="service-desc">{{services.time_required}}</div>
+</div>
+<!-- {{services}} -->
+<!-- <div  style="height: 5%; margin-top: 3%; padding-left: 80%;" > <button style="padding: 7px 20px; font-size: 18px; border-radius: 8px; background-color: #007bff; cursor: pointer;" onclick="location.href='/service/add';"> Add new service </button></div> -->
+<div style="display: inline-block; margin-left: 10%; padding-right: 3%; font-size: 200%; font-weight: bold; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;">
+    Our Best Proffesionals</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Proffesional</th>
+            <th>Service Name</th>
+            <th>Pincode</th>
+            <th>Rating</th>
+            <th>Base Price</th>
+            {% if type1 =='cust' %} 
+                <th>Action</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for pro in pros %}
+            <tr>
+                <td> {{pro.pro_name}}</td> 
+                <td> {{pro.pro_desc}}</td> 
+                <td> {{pro.pro_pincode}}</td> 
+                {% if pro.pro_rating == 0.0 %} 
+                    <td>Not Rated</td> 
+                {% else %}
+                    <td> {{pro.pro_rating}}</td> 
+                {% endif %}
+                <td> {{pro.service_b_price}}</td>
+                {% if type1 =='cust' %}
+                    <td><form method="POST">
+                        <button name="pro_id" value="{{pro.pro_id}}" type="submit">Visit</button>
+                        </form>
+                    </td> 
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
+
+    <style>
+        body, h1, p, form {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background: antiquewhite;
+    }
+    
+    tr:hover {
+        background-color: #d1d8e0;
+    }
+    button:hover {
+        background-color: #1a64b9;
+    }
+
+    table {
+        width: 80%;
+        margin-left: 10%;
+        border-collapse: collapse;
+        font-size: 18px;
+    }
+
+    table, th, td {
+        border: 1px solid #bdc3c7;
+    }
+
+    th {
+        background-color: #3498db;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+    td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: #ecf0f1;
+    }
+
+    tr:hover {
+        background-color: #d1d8e0;
+    }
+
+    td, th {
+        border-radius: 5px;
+    }
+    </style>
+{% endblock %}

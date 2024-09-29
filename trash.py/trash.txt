@@ -1,0 +1,61 @@
+
+"""@app.route("/reg_c", methods=['POST', 'GET'])
+def reg_u():
+    conn =db_connect()
+    username_db= conn.execute('SELECT c_username FROM customers').fetchall()
+    # conn.commit()
+    name= request.form.get("name")
+    email= request.form.get("email")
+    pass1= request.form.get("pass")
+    # exp= request.form.get("exp")
+    # desc= request.form.get("desc")
+    username= request.form.get("username")
+    # service_type= request.form.get("service")
+    address= request.form.get('address')
+    pincode= str(request.form.get('pincode'))
+    date1 = datetime.now().strftime('%Y-%m-%d')
+    username_db =[i[0] for i in username_db] 
+    print(name, email, username, username_db)
+    # print(pass1,'ppppppppppppp')
+    if username in username_db :
+        flag1="username already exist"
+        return render_template("reg.html", flag1=flag1)
+    else:
+        cursor=conn.cursor()
+        cursor.execute("INSERT INTO customers (c_name, c_username, c_email, c_pass, c_joined, c_address,c_pincode) VALUES (?,?,?,?,?,?,?)", (name,username,email,pass1,date1,address,pincode))
+        conn.commit()
+
+        flag2= "user created succesfully"
+        return render_template("reg_c.html", flag2=flag2)
+"""
+"""@app.route("/reg_p", methods=['POST', 'GET'])
+def reg_p():
+    conn =db_connect()
+    username_db= conn.execute('SELECT pro_username FROM serve_pro').fetchall()
+    # conn.commit()
+    name= request.form.get("name")
+    email= request.form.get("email")
+    pass1= request.form.get("pass")
+    exp= request.form.get("exp")
+    desc= request.form.get("desc")
+    username= request.form.get("username")
+    service_type= request.form.get("service")
+    address= request.form.get('address')
+    pincode= str(request.form.get('pincode'))
+    date1 = datetime.now().strftime('%Y-%m-%d')
+    username_db =[i[0] for i in username_db] 
+    print(username, username_db)
+    # print(pass1,'ppppppppppppp')
+    if username in username_db :
+        flag1="username already exist"
+        return render_template("reg.html", flag1=flag1)
+    else:
+        cursor=conn.cursor()
+        cursor.execute("INSERT INTO serve_pro (pro_name,pro_service, pro_username, pro_email, pro_pass, pro_exp, pro_joined, pro_desc,pro_address,pro_pincode) VALUES (?,?,?,?,?,?,?,?,?,?)", (name,service_type,username,email,pass1,exp,date1,desc,address,pincode))
+        conn.commit()
+
+        flag2= "user created succesfully"
+        return render_template("reg.html", flag2=flag2)
+
+    # return render_template("reg.html")
+"""

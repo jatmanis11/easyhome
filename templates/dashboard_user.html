@@ -1,0 +1,203 @@
+{% extends "common.html" %}
+{% block body %}
+
+{% if type1 =='cust' %}
+
+    <div style=" margin-left: 10%; ">
+        <div style="font-size: 250%; color: rgb(155, 9, 9); font-weight: bold;"> Hy {{user.cust_name}}</div>
+        <div style="font-size: 150%; color: rgb(15, 15, 19);"> Welcome To EasyHome Dashboard</div>
+    </div>
+
+    <div  style="display:  flex; justify-content: flex-end; height: 5%; margin-top: 3%;" >
+        <button style="padding: 7px 20px; font-size: 18px; border-radius: 8px; margin-right: 10%; cursor: pointer;" onclick="location.href='/services';"> 
+            Request New Service </button></div>
+    <div style="display: inline-block; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
+        Pending Service</div>
+    <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
+    <table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+        <thead>
+            <tr>
+                <th>S no.</th>
+                <th>professional</th>
+                <th>Service</th>
+                <th>Reqested on </th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            {% for req in s1 %}
+                {% if req.5 != 'Closed' %}
+                    <tr>
+                        <td> {{loop.index}}</td> 
+                        <td> {{req.1}}/{{req.2}}</td> 
+                        <td> {{req.3}}</td> 
+                        <td> {{req.4}}</td> 
+                        <td> 
+                            <!-- {{req.5}} -->
+                            {% if req.5 == 'Accepted' %}
+                                <div style="color: green;">{{req.5}}</div>
+                            {% elif req.5 == 'Rejected' %}
+                                <div style="color: red;">{{req.5}}</div>
+                            {% elif req.5 == 'service requested' %}
+                                <div >{{req.5}}</div>
+                            {% endif %}</td> 
+                        <td>
+                            {% if req.5 == 'Accepted' %}
+                                <form action="/dashboard" method="POST">
+                                    <button name="close" value="{{req.6}}" type="submit">Close it</button>
+                            {% elif req.5 == 'service requested' %}
+                                Wait for request accept
+                            {% else %} Closed
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% elif type1 =='pro' %}
+    <div style=" margin-left: 10%; margin-bottom: 2%; ">
+
+        <div style="font-size: 250%; color: rgb(155, 9, 9); font-weight: bold;">  Hy {{user.pro_username}}</div>
+        <div style="font-size: 150%; color: rgb(15, 15, 19);"> Welcome To EasyHome Dashboard</div>
+        {{user.pro_pincode}}<br>
+        {{user.pro_address}}<br>
+        {{user.pro_address}}<br>
+    </div>
+    <div style="display: inline-block; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
+        Pending Services</div>
+    <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
+    <table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+        <thead>
+            <tr>
+                <th>S no.</th>
+                <th>Customer</th>
+                <th>Location</th>
+                <th>Reqested on </th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in s1 %}
+                {% if req.7 != 'closed' %}
+                    <tr>
+                        <td> {{loop.index}}</td>
+                        <td>{{req.0}}</td> 
+                        <td> {{req.1}} / {{req.2}}</td> 
+                        <td> {{req.2}}</td> 
+                        <td> 
+                            {% if req.7 == 'Accepted' %}
+                            <div style="color: green;">{{req.7}}</div>
+                            {% elif req.7 == 'Rejected' %}
+                            <div style="color: red;">{{req.7}}</div>
+                            {% else %}
+                            <div >{{req.7}}</div>
+                            {% endif %}
+                        </td> 
+                        
+                        {% if req.7 =='service requested' %}
+                            <td><form action="/dashboard" method="POST"> 
+                                <button name="accept" value="{{req.8}}" type="submit">Accept</button>
+                                <button name="reject" value="{{req.8}}" type="submit">Reject</button>
+                            </td> 
+                        {% else %}
+                                <td>request closed </td>
+                        {% endif %} 
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="margin-top: 1%; display: inline-block; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
+        Service History</div>
+    <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
+    <table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+        <thead>
+            <tr>
+                <th>S no.</th>
+                <th>Customer</th>
+                <th>Location</th>
+                <th>Reqested on </th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for req in s1 %}
+            {% if req.7 == 'Rejected' or req.7 =='Closed' %} 
+
+            <tr>
+                <td> {{loop.index}}</td>
+                <td>{{req.0}}</td> 
+                <td> {{req.1}} / {{req.2}}</td> 
+                <td> {{req.2}}</td> 
+                <td> 
+                    {% if req.7 == 'Closed' %}
+                        <div style="color: green;">{{req.7}}</div>
+                    {% elif req.7 == 'Rejected' %}
+                        <div style="color: red;">{{req.7}}</div>
+                    {% endif %}</td> 
+                
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+</body>
+</html>
+
+    <style>
+        body, h1, p, form {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background: antiquewhite;
+    }
+    
+    tr:hover {
+        background-color: #d1d8e0;
+    }
+    button:hover {
+        background-color: #1a64b9;
+    }
+
+    table {
+        width: 80%;
+        border-collapse: collapse;
+        font-size: 18px;
+    }
+
+    table, th, td {
+        border: 1px solid #bdc3c7;
+    }
+
+    th {
+        background-color: #3498db;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+    td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: #ecf0f1;
+    }
+
+    tr:hover {
+        background-color: #d1d8e0;
+    }
+
+    td, th {
+        border-radius: 5px;
+    }
+    </style>
+{% endblock %}
