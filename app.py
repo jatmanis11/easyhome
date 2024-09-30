@@ -122,7 +122,7 @@ Session(app)
 @app.route("/")
 def home():
     username=session.get("username")
-    return render_template("index.html",username=username )
+    return render_template("index.html",username=username)
 
 @app.route("/admin")
 def admin():
@@ -140,8 +140,7 @@ def register_pro():
     # k2 =[i.service_name for i in k1]
     flag=False
     exp1=["Fresher","1","2","3","4","5","5+"]
-    
-    
+
     if request.method== "POST":
         name= request.form.get("name")
         email= request.form.get("email")
