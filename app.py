@@ -1,10 +1,17 @@
-from flask import Flask, request, render_template, url_for, redirect,session
+from flask import Flask, request, render_template, url_for, redirect,session, cli
 import sqlite3
 from flask_session import Session
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import bcrypt
+import click
+
+# defualt admin :- 
+# username = 'admin_iitm' 
+# password = 'admin_pass'
+
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -99,10 +106,26 @@ class Service_request(db.Model):
         self.req_rating = None
         self.req_remark = None
 
+class Admin(db.Model):
+    admin_id=db.Column(db.Integer, primary_key = True)
+    admin_username = db.Column(db.String,  nullable=False)
+    admin_password = db.Column(db.String,  nullable=False)
+    admin_email = db.Column(db.String,  nullable=False)
+    def __init__( self, username, password, email):
+        self.admin_username= username
+        self.admin_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        self.admin_email = email 
+    def check_pass(self, password):
+        return bcrypt.checkpw(password.encode('utf-8'), self.admin_password)
 
-# with app.app_context():
-#     db.create_all()
-# following 3 lines for cookies setup
+
+
+""" table init """
+with app.app_context():
+    db.create_all()
+
+"""following 3 lines for cookies setup"""
+
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = 'filesystem'
 Session(app)
@@ -119,14 +142,33 @@ Session(app)
 
 # def registration_db():
 #     conn= db_connect()
+@app.cli.command('create_superuser')
+@click.option('--username', prompt ='Enter Username')
+@click.option('--email', prompt ='Email')
+@click.option('--password1', prompt ='Enter Password', hide_input = True)
+@click.option('--password2', prompt ='Enter Password Again', hide_input = True)
+def create_superuser(username, email, password1, password2):
+    if password1 ==password2: 
+            username = username
+            admins = Admin.query.filter(Admin.admin_username == username).first()
+            userp= Pro.query.filter_by(pro_username = username).first()
+            userc= Cust.query.filter_by(cust_username = username).first()
+            # print(admins)
+            if admins or userp or userc:
+                return click.echo('Username arlready Exist')
+            email = email
+            new_admin = Admin(username=username, password=password1, email=email)
+            db.session.add(new_admin)
+            db.session.commit()
+            click.echo(f'hy {username} superuser created successfully')
+    else:
+        return click.echo('Password Not Match')
+    
+
 @app.route("/")
 def home():
     username=session.get("username")
     return render_template("index.html",username=username)
-
-@app.route("/admin")
-def admin():
-    return  render_template("admin.html")
 
 @app.route("/register", methods=['POST', 'GET'])
 def register_pro():
@@ -203,6 +245,59 @@ def register_c():
             return redirect("/verification")
 
     return render_template("register_c.html", flag=flag)
+
+
+@app.route("/login", methods=['POST','GET'])
+def login():
+    username=request.form.get("username")
+    pass1=request.form.get("pass")
+    flag= False
+    userp= Pro.query.filter_by(pro_username = username).first()
+    userc= Cust.query.filter_by(cust_username = username).first()
+    admin= Admin.query.filter_by(admin_username = username).first()
+    print(admin,'admin1')
+    print(userp, userc)
+    print(username, pass1)
+    if userp:
+        print(userp.pro_name)
+        session['type1']= "pro"
+        if userp.check_pass(pass1):
+            session['username']=username
+            flag = "login success"
+            return redirect(f"/dashboard")
+        else:
+            flag='Incorrect password'
+    elif userc:
+        session['type1']= "cust"
+        if userc.check_pass(pass1):
+            session['username']=username
+            flag = "login success"
+            return redirect(f"/dashboard")
+        else:
+            flag='Incorrect password'
+    elif admin:
+        print('admin2')
+        session['type1']= "admin"
+        if admin.check_pass(pass1):
+            session['username']=username
+            flag = "login success"
+            return redirect(f"/admin")
+        else:
+            flag='Incorrect password'
+    else: flag= 'Username Not Found'
+    return render_template("login.html",flag=flag)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
+@app.route("/admin", methods = ['POST','GET'])
+def admin():
+    if session['type1'] == 'admin':
+        return render_template("admin.html")
+    else:
+        return redirect('/dashboard')
 '''   
 @app.route("/dashboard", methods=["POST",'GET'])
 def dashboard():
@@ -248,39 +343,6 @@ def service_add(flag):
 
 
 
-@app.route("/login", methods=['POST','GET'])
-def login():
-    username=request.form.get("username")
-    pass1=request.form.get("pass")
-    flag= False
-    userp= Pro.query.filter_by(pro_username = username).first()
-    userc= Cust.query.filter_by(cust_username = username).first()
-    print(userp, userc)
-    print(username, pass1)
-    if userp:
-        print(userp.pro_name)
-        session['type1']= "pro"
-        if userp.check_pass(pass1):
-            session['username']=username
-            flag = "login success"
-            return redirect(f"/dashboard")
-        else:
-            flag='Incorrect password'
-    elif userc:
-        session['type1']= "cust"
-        if userc.check_pass(pass1):
-            session['username']=username
-            flag = "login success"
-            return redirect(f"/dashboard")
-        else:
-            flag='Incorrect password'
-    else: flag= 'Username Not Found'
-    return render_template("login.html",flag=flag)
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/login")
-
     # return  render_template("login.html")
 @app.route("/dashboard", methods=['POST','GET'])
 def dashboard_user():
@@ -321,6 +383,9 @@ def dashboard_user():
             # print(s2,'kl')
             print(request_created)
             print(user)
+        elif session['type1'] == 'admin':
+            print('admin')
+
         else:
             return redirect("/login")
     else:
@@ -349,6 +414,7 @@ def dashboard_user():
 
 @app.route("/verification")
 def verify():
+
     return render_template("verify.html")
 @app.route("/services")
 def all_serv():
