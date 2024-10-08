@@ -1,6 +1,6 @@
 {% extends "common.html" %}
 {% block body %}
-<div>    Services we offer
+<div style="margin-left: 10%; margin-right: 10%;">    <h1>Services we offer</h1>
     <div class="container">
         {% for service in services %}
         <div  onclick="window.location.href='/service_page/{{service.service_id}}'" class="service-box">
@@ -8,7 +8,7 @@
             <div class="service-title">{{service.service_name}}</div>
             <div class="service-desc">{{service.service_desc}}</div>
             <div class="service-desc">{{service.service_b_price}}</div>
-            <div class="service-desc">{{service.time_required}}</div>
+            <div class="service-desc">Needs {{service.time_required}}h complete</div>
             
             </div>
             

@@ -308,39 +308,6 @@ def dashboard():
     # service_pro=conn.execute("SELECT * FROM serve_pro WHERE pro_service =?", (p_service)).fetchone()
     return render_template("dashboard.html",p= p_service, sp=service_pro) 
 '''
-   
-@app.route("/service/<flag>", methods=["POST",'GET'])
-def service_add(flag):
-    serv=flag
-    print(serv,"fghgfghhf")
-    flag2 = False
-    flag1= False
-    service1= None
-    if flag== "add":
-        flag2 = True
-        if request.method=='POST':
-            print(121231)
-            service_type= request.form.get('service_name')
-            desc= request.form.get('desc')
-            base_p= request.form.get('service_price')
-            time_required= request.form.get('service_time')
-            new_service = Services( service_type= service_type,desc=desc, b_price=base_p, time_required=time_required)
-            db.session.add(new_service)
-            db.session.commit()
-            flag = "Service Added Successfully"
-    else:
-
-        service1=Services.query.filter_by(service_id =serv).first()
-        flag1=True
-        if request.method=='POST' and service1:
-            service1.service_name= request.form.get('service_name')
-            service1.service_desc= request.form.get('desc')
-            service1.service_b_price= request.form.get('service_price')
-            service1.time_required= request.form.get('service_time')
-            db.session.commit()
-            return redirect("/service")
-    return render_template("service_add.html", flag1=flag1,flag2=flag2, services=service1)
-
 
 
     # return  render_template("login.html")
@@ -412,6 +379,10 @@ def dashboard_user():
     print(typek)
     return render_template("dashboard_user.html",serv1 = service1,s1=s1,request_created=request_created, type1 = typek ,user= user)
 
+@app.route("/admin/pro")
+def admin_pro():
+    pros= Pro.query.all()
+
 @app.route("/verification")
 def verify():
 
@@ -421,6 +392,7 @@ def all_serv():
     services =Services.query.all()
     return render_template("services.html", services=services)
 
+ 
 @app.route("/service", methods=['POST', 'GET'])
 def service():
     serv=Services.query.all()
@@ -441,6 +413,39 @@ def service():
             print(service1.service_name)
             
     return render_template("service.html",serv=serv)
+  
+@app.route("/service/<flag>", methods=["POST",'GET'])
+def service_add(flag):
+    serv=flag
+    print(serv,"fghgfghhf")
+    flag2 = False
+    flag1= False
+    service1= None
+    if flag== "add":
+        flag2 = True
+        if request.method=='POST':
+            print(121231)
+            service_type= request.form.get('service_name')
+            desc= request.form.get('desc')
+            base_p= request.form.get('service_price')
+            time_required= request.form.get('service_time')
+            new_service = Services( service_type= service_type,desc=desc, b_price=base_p, time_required=time_required)
+            db.session.add(new_service)
+            db.session.commit()
+            flag = "Service Added Successfully"
+    else:
+
+        service1=Services.query.filter_by(service_id =serv).first()
+        flag1=True
+        if request.method=='POST' and service1:
+            service1.service_name= request.form.get('service_name')
+            service1.service_desc= request.form.get('desc')
+            service1.service_b_price= request.form.get('service_price')
+            service1.time_required= request.form.get('service_time')
+            db.session.commit()
+            return redirect("/service")
+    return render_template("service_add.html", flag1=flag1,flag2=flag2, services=service1)
+
 
 
 

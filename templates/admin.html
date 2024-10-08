@@ -1,16 +1,22 @@
 {% extends "common.html" %}
 {% block body %}
+
+<body>
 <div style="margin-left: 10%; margin-right:10%">
 <h1> </h1>
 Hy admin_username :)<br>
-<div style="border-radius: 15px; display: flex; background: rgb(241, 208, 157); justify-content: space-between; height: 5%; padding-top: 1%;">
+<div style="border-radius: 15px; display: flex; background: rgb(231, 230, 229); justify-content: space-between; height: 5%; padding-top: 1%;">
     <div style="padding-left: 5%; font-size: 200%; color: #4a205a; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
         Admin Dashboard</div>
     <div style="display: flex; margin-right: 10%;">
-        <button style="margin-right: 0.5%; padding: 1% 5%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer;" onclick="location.href='/login';"> Services </button>
-        <button style="padding: 1% 5%; margin-right: 0.5%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer;" onclick="location.href='/';"> Proffessional</button>
-        <button style="padding: 1% 5%; margin-right: 10%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer; " onclick="location.href='/dashboard';">Your Profile</button>
+        <button style="margin-right: 0.5%; padding: 1% 5%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer;" 
+        onclick="location.href='/service';">Services </button>
+        <button style="padding: 1% 5%; margin-right: 0.5%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer;" 
+        onclick="location.href='/admin/pro';">Proffessionals</button>
+        <button style="padding: 1% 5%; margin-right: 10%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer; " 
+        onclick="location.href='/admin';">Your Profile</button>
     </div>
 </div>
 </div>
+</body>
 {% endblock %}
