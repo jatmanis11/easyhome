@@ -1,14 +1,14 @@
 {% extends "common.html" %}
 {% block body %}
 <div style="margin-left: 10%; margin-right: 10%;">    <h1>Services we offer</h1>
-    <div class="container">
+    <div class="container1">
         {% for service in services %}
         <div  onclick="window.location.href='/service_page/{{service.service_id}}'" class="service-box">
             <div class="service-icon">icon</div>
-            <div class="service-title">{{service.service_name}}</div>
-            <div class="service-desc">{{service.service_desc}}</div>
-            <div class="service-desc">{{service.service_b_price}}</div>
-            <div class="service-desc">Needs {{service.time_required}}h complete</div>
+            <div class="service-title"><b style="color: rgb(201, 45, 34);">{{service.service_name}}</b></div>
+            <div class="service-desc"><b style="color: rgb(45, 119, 115);">{{service.service_desc}}</b></div>
+            <div class="service-desc">  <b style="color: rgb(188, 27, 209);">₹ {{service.service_b_price}}</b></div>
+            <div class="service-desc"><a style="color: rgb(0, 0, 0);">Needs <b style="color: rgb(255, 255, 255);">{{service.time_required}} h </b>complete</a></div>
             
             </div>
             
@@ -17,7 +17,7 @@
 
 <style>
 
-    .container {
+    /* .containerrrs {
         max-width: 1200px;
         margin: 20px auto;
         display: grid;
@@ -25,7 +25,7 @@
         gap: 20px;
         padding: 10px;
         width: 100%;
-    }
+    } */
 
     .service-box {
         background-color: #fff;

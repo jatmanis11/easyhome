@@ -1,9 +1,11 @@
-from flask import Flask, request, render_template, url_for, redirect,session, cli
+from flask import Flask, request, render_template, url_for, redirect,session, cli, flash
 import sqlite3
 from flask_session import Session
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from functools import wraps
+# from flask_paginator import Paginator
 import bcrypt
 import click
 
@@ -32,9 +34,10 @@ class Pro(db.Model):
     pro_service = db.Column(db.Integer, db.ForeignKey('services.service_id'), nullable = False)
     pro_exp = db.Column(db.String, nullable = False)
     pro_desc = db.Column(db.String, nullable = False)
+    pro_status = db.Column(db.String)
     pro_rating = db.Column(db.Float)
 
-    def __init__(self,pro_name,pro_username,pro_email,pro_password,pro_address,pro_pincode,pro_service,pro_exp,pro_desc):
+    def __init__(self,pro_name,pro_username,pro_email,pro_password,pro_address,pro_pincode,pro_service,pro_exp,pro_desc, pro_status='unverfied'):
         self.pro_name=pro_name.capitalize()
         self.pro_username=pro_username
         self.pro_email=pro_email
@@ -46,8 +49,10 @@ class Pro(db.Model):
         self.pro_exp=pro_exp
         self.pro_desc=pro_desc
         self.pro_rating = 0
+        self.pro_status = pro_status
     def check_pass(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.pro_password)
+
 
 class Cust(db.Model):
     cust_id = db.Column(db.Integer, primary_key = True)
@@ -163,13 +168,41 @@ def create_superuser(username, email, password1, password2):
             click.echo(f'hy {username} superuser created successfully')
     else:
         return click.echo('Password Not Match')
-    
+
+#created decorators are :
+def admin_only(f):
+    @wraps(f)
+    def admin1(*args, **kwargs):
+        print('123123123')
+        if session : 
+            user =session.get('type1')
+            print(user,'typek')
+            if user == 'admin':
+                flash('You need to be logged in as an admin to access this page.', 'warning')
+                return f(*args, **kwargs)
+            else: return redirect('/dashboard')
+        else: return redirect('/login')
+    return admin1
+def login_needed(f):
+    @wraps(f)
+    def login1(*args, **kwargs):
+        if session.get('username'):
+            return f(*args, **kwargs)
+        else:
+            return redirect('/login')
+    return login1
 
 @app.route("/")
 def home():
-    username=session.get("username")
-    return render_template("index.html",username=username)
+    services =Services.query.all()
 
+    username=session.get("username")
+    # return redirect('/dashboard')
+    return render_template("index.html",username=username,services=services)
+
+def common():
+    session1 =  session
+    return render_template('common.html', session= session1)
 @app.route("/register", methods=['POST', 'GET'])
 def register_pro():
     username= request.form.get("username")
@@ -276,7 +309,7 @@ def login():
         else:
             flag='Incorrect password'
     elif admin:
-        print('admin2')
+        # print('admin2')
         session['type1']= "admin"
         if admin.check_pass(pass1):
             session['username']=username
@@ -288,17 +321,37 @@ def login():
     return render_template("login.html",flag=flag)
 
 @app.route("/logout")
+@login_needed
 def logout():
     session.clear()
     return redirect("/login")
 
 @app.route("/admin", methods = ['POST','GET'])
+@admin_only
 def admin():
-    if session['type1'] == 'admin':
-        return render_template("admin.html")
-    else:
-        return redirect('/dashboard')
-'''   
+    return render_template("admin.html")
+        
+
+
+@app.route("/admin/pro")
+@admin_only
+def admin_pro():
+    pros= Pro.query.all()
+    return render_template('admin_pro.html', pros= pros)
+
+@app.route("/admin/pro/<pro_id>", methods = ['POST','GET'])
+@admin_only
+def admin_pro_edit(pro_id):
+    pro_id1 = pro_id
+    pro1 =Pro.query.filter(Pro.pro_id == pro_id1).first()
+    print(pro1)
+    status = ['ban', 'allow', 'reject','archive']
+    if request.method =='POST':     
+        pro1.pro_status= str(request.form.get('pro_status'))
+        db.session.commit()
+           
+    return render_template('admin_pro_edit.html',status= status, pro=pro1)
+''' 
 @app.route("/dashboard", methods=["POST",'GET'])
 def dashboard():
     p_service= request.form.get('service')
@@ -309,13 +362,15 @@ def dashboard():
     return render_template("dashboard.html",p= p_service, sp=service_pro) 
 '''
 
-
     # return  render_template("login.html")
 @app.route("/dashboard", methods=['POST','GET'])
+@login_needed
+
 def dashboard_user():
     # print(session["type1"])
     service1 = False
     user = False
+    user_serv = False
     request_created= False
     typek = False
     s1= None
@@ -327,7 +382,7 @@ def dashboard_user():
             user = Cust.query.filter_by(cust_username = k).first()
             request_created = Service_request.query.filter_by(req_cust_id = user.cust_id).all()
             # print(request_created)
-            s1 = db.session.query(Cust.cust_name, Pro.pro_name, Pro.pro_username,Services.service_name, Service_request.req_date, Service_request.req_status, Service_request.req_id).join(Services,
+            s1 = db.session.query(Cust.cust_name, Pro.pro_name, Pro.pro_username,Services.service_name, Service_request.req_date, Service_request.req_status, Service_request.req_id, Service_request.req_rating,Service_request.req_remark, Service_request.req_completed_date).join(Services,
             Service_request.req_service_id == Services.service_id).join(Pro, Service_request.req_pro_id == Pro.pro_id).join(Cust,
             Service_request.req_cust_id == Cust.cust_id).filter(Service_request.req_cust_id==user.cust_id).all()
             
@@ -337,22 +392,24 @@ def dashboard_user():
         elif session['type1']== 'pro':
             typek = 'pro'
             user = Pro.query.filter_by(pro_username = k).first()
+            user_serv = Services.query.filter_by(service_id = user.pro_service).first()
+            
             # print(user.pro_service)
             service1=Services.query.filter_by(service_id = user.pro_service).first()
             request_created = Service_request.query.filter_by(req_pro_id = user.pro_id).all()
             s1 = db.session.query(Cust.cust_username,Services.service_name,Service_request.req_date, Service_request.req_status).join(Services,  Service_request.req_service_id == Services.service_id).join(Cust, Service_request.req_cust_id == Cust.cust_id).all()
-            s1 = db.session.query(Cust.cust_name, Cust.cust_address,Cust.cust_pincode, Pro.pro_name, Pro.pro_username, Services.service_name, Service_request.req_date, Service_request.req_status, Service_request.req_id).join(Services,
+            s1 = db.session.query(Cust.cust_name, Cust.cust_address,Cust.cust_pincode, Pro.pro_name, Pro.pro_username, Services.service_name, Service_request.req_date, Service_request.req_status, Service_request.req_id, Service_request.req_completed_date).join(Services,
             Service_request.req_service_id == Services.service_id).join(Pro, Service_request.req_pro_id == Pro.pro_id).join(Cust,
             Service_request.req_cust_id == Cust.cust_id).filter(Service_request.req_pro_id==user.pro_id).all()
             
             # s2 = [i.cust_name_1 for i in s1 ]
             # print(s1, "kwerw")
             # print(s2,'kl')
-            print(request_created)
-            print(user)
+            # print(request_created)
+            # print(user)
         elif session['type1'] == 'admin':
-            print('admin')
-
+            # print('admin')
+            return redirect('/admin')
         else:
             return redirect("/login")
     else:
@@ -376,14 +433,12 @@ def dashboard_user():
             return redirect(f"/remarks/{close}")
         
             # print("reject")
-    print(typek)
-    return render_template("dashboard_user.html",serv1 = service1,s1=s1,request_created=request_created, type1 = typek ,user= user)
-
-@app.route("/admin/pro")
-def admin_pro():
-    pros= Pro.query.all()
+    # print(typek)
+    # print(s1,type(s1))
+    return render_template("dashboard_user.html",user_serv= user_serv, serv1 = service1,s1=s1,request_created=request_created, type1 = typek ,user= user)
 
 @app.route("/verification")
+
 def verify():
 
     return render_template("verify.html")
@@ -394,15 +449,19 @@ def all_serv():
 
  
 @app.route("/service", methods=['POST', 'GET'])
+@admin_only
 def service():
     serv=Services.query.all()
     del1= request.form.get("del")
     edit1=request.form.get("edit1")
-    print(del1)
+    # page = request.form.get('page',1,type=int)
+    # paginator = Paginator(posts,5) # 5 post per page
+    # pagination = paginator.page(page)
+    # print(del1)
     if del1:
         service1= Services.query.get(del1)
         if service1:
-            print(service1)
+            # print(service1)
             db.session.delete(service1)
             db.session.commit()
     if edit1:
@@ -410,11 +469,12 @@ def service():
         if service1:
             flag2=service1.service_id
             return redirect(f"/service/{flag2}" )
-            print(service1.service_name)
+            # print(service1.service_name)
             
-    return render_template("service.html",serv=serv)
+    return render_template("service.html",serv=serv )#, pagination= pagination)
   
 @app.route("/service/<flag>", methods=["POST",'GET'])
+@admin_only
 def service_add(flag):
     serv=flag
     print(serv,"fghgfghhf")
@@ -433,6 +493,7 @@ def service_add(flag):
             db.session.add(new_service)
             db.session.commit()
             flag = "Service Added Successfully"
+            return redirect('/services')
     else:
 
         service1=Services.query.filter_by(service_id =serv).first()
@@ -448,8 +509,8 @@ def service_add(flag):
 
 
 
-
 @app.route("/service_page/<service_id>", methods = ['POST','GET'])
+@login_needed
 def service_page(service_id):
     service_id1 = service_id
     typek = session["type1"]
@@ -475,13 +536,16 @@ def service_page(service_id):
 
 
 @app.route("/service/pro/<pro_req_id>", methods = ['POST','GET'])
+@login_needed
 def service_pro(pro_req_id):
     return redirect(f"/service/book/{pro_req_id}")
 
 @app.route("/service/book/<pro_id>", methods =['POST','GET'])
+@login_needed
 def book(pro_id):
     pro_id1 = pro_id
     s1 = None
+    s2 =None
     # print(s1)
     if session :
         if request.method == 'POST':
@@ -497,10 +561,19 @@ def book(pro_id):
             return redirect("/booking_success")
         else:
             s1 = Pro.query.filter(Pro.pro_id == pro_id1).first()
-            print(s1, "sdfsddf")
+            s2 =db.session.query(Cust.cust_username,Service_request.req_completed_date, 
+                Service_request.req_rating,Service_request.req_remark).join(Service_request, 
+                    Service_request.req_cust_id == Cust.cust_id).filter((Service_request.req_pro_id == pro_id1) & (Service_request.req_status =='Closed')).all()
+            # print(s1, "sdfsddf")
     else:
         return redirect('/login')
-    return render_template("booking.html", s1 = s1)
+    return render_template("booking.html", s1 = s1,s2=s2)
+
+@app.route('/booking_success')
+@login_needed
+def book_success():
+    flag = True
+    return render_template('booking.html', flag=flag)
 
 # @app.route("/accept/<req_id>")
 def req_accept(req_id):

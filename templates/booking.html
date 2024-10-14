@@ -1,11 +1,85 @@
 {% extends "common.html" %}
 {% block body %}
-<h1>
-{{s1.pro_name}}</h1>
-{{s1.pro_name}}
-
-<td><form method="POST">
-    <button name="pro_id" value="{{s1.pro_id}}" type="submit">Book now </button>
+<div style="margin-left: 10%;">
+{% if flag %}
+    <h1> Booking Success</h1>
+    <h2> Go To <a href="\dashboard"> Dashboard </a></h2>
+{% else %}
+    <h1>{{s1.pro_name}}</h1>
+   <form method="POST">
+        <button name="pro_id" value="{{s1.pro_id}}" type="submit">Book Now </button>
     </form>
-</td> 
+{% endif %}
+
+<!-- for rating -->
+
+</div>
+        <div class="container">
+            {% for i in s2 %}
+                {% if i.req_rating %}
+
+                    <!-- <a style="font-size: 120%; padding-bottom: 0;">{{ i.0}}</a>|<a style="font-size: 60%;">{{i.1}}</a><br>
+                    {% for j in range(0,i.req_rating |int) %} ⭐ {% endfor %}<br>
+                    {{i.3}}
+                    <br> -->
+                    
+                        <div  onclick="window.location.href='#'" class="service-box">
+                            <div class="service-icon">icon</div>
+                            <div class="service-title"><b style="color: rgb(201, 45, 34);">{{i.0}}</b></div>
+                            <div class="service-desc"><b style="color: rgb(45, 119, 115);">{{i.1}}</b></div>
+                            <div class="service-desc">  {% for j in range(0,i.req_rating |int) %} ⭐ {% endfor %}</div>
+                            <div class="service-desc"><a style="color: rgb(0, 0, 0);">i.3</div>
+                        </div>
+                    {% endif %}
+    {% endfor %}</div>
+       
+        
+
+<style>
+/* 
+    .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        padding: 10px;
+        width: 100%;
+    } */
+
+    .service-box {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.2s ease;
+        max-width: 200px;
+    }
+
+    .service-box:hover {
+        transform: scale(1.05);
+    }
+
+    .service-title {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+        font-weight: bold;
+        word-wrap: break-word;
+    }
+
+
+    .service-desc {
+        background-color: #f2a654;
+        color: white;
+        padding: 5px 10px;
+        margin-top: 2px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        word-wrap: break-word;
+    }
+
+
+</style>
+
 {% endblock %}

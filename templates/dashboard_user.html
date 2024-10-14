@@ -1,5 +1,6 @@
 {% extends "common.html" %}
 {% block body %}
+{% set sno1 = 2 %}
 
 {% if type1 =='cust' %}
 
@@ -29,7 +30,7 @@
 
         <tbody>
             {% for req in s1 %}
-                {% if req.5 != 'Closed' %}
+                {% if req.5 != 'Closed' and req.5 != 'Rejected' %}
                     <tr>
                         <td> {{loop.index}}</td> 
                         <td> {{req.1}}/{{req.2}}</td> 
@@ -47,7 +48,7 @@
                         <td>
                             {% if req.5 == 'Accepted' %}
                                 <form action="/dashboard" method="POST">
-                                    <button name="close" value="{{req.6}}" type="submit">Close it</button>
+                                    <button name="close" value="{{req.6}}" type="submit">Close it</button></form>
                             {% elif req.5 == 'service requested' %}
                                 Wait for request accept
                             {% else %} Closed
@@ -57,16 +58,62 @@
                 {% endif %}
             {% endfor %}
         </tbody>
+    </table></div>
+    <div style="display: inline-block; margin-top: 10px; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
+        Service History</div>
+    <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
+    <table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+        <thead>
+            <tr>
+                <th>S no.</th>
+                <th>Proffesional</th>
+                <th>Service</th>
+                <th>Finish Date</th>
+                <th>Status</th>
+                <th>Rating | Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for req in s1 %}
+        {% if req.5 == 'Rejected' or req.5 =='Closed' %} 
+            <tr>
+                <td>{{loop.index}} </td>
+                
+                <td> {{req.1}} / {{req.2}}</td> 
+                <td> {{req.3}}</td> 
+                <td> {{req.9}}</td>
+                <td> 
+                    {% if req.5 == 'Closed' %}
+                        <div style="color: green;">{{req.5}}</div>
+                    {% elif req.5 == 'Rejected' %}
+                        <div style="color: red;">{{req.5}}</div>
+                    {% endif %}</td> 
+                    <td> 
+                        {% if req.7 %} {{req.7}} |{% endif %}
+                        {% if req.8 %}{{req.8}}{% endif %}                   
+                    </td> 
+                        <!-- cust3,0
+                        pro1,1
+                        upro1,2
+                        furniture ,3
+                        2024-10-09,4
+                        Closed,5
+                        13,6
+                        1.0,7
+                        best service,8
+                        Closed,5                     -->       
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
     </table>
-
 {% elif type1 =='pro' %}
     <div style=" margin-left: 10%; margin-bottom: 2%; ">
 
         <div style="font-size: 250%; color: rgb(155, 9, 9); font-weight: bold;">  Hy {{user.pro_username}}</div>
         <div style="font-size: 150%; color: rgb(15, 15, 19);"> Welcome To EasyHome Dashboard</div>
-        {{user.pro_pincode}}<br>
-        {{user.pro_address}}<br>
-        {{user.pro_address}}<br>
+        {{user.pro_address}} | {{user.pro_pincode}}<br>
+        {{user_serv.service_name}}<br>
     </div>
     <div style="display: inline-block; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
         Pending Services</div>
@@ -77,19 +124,20 @@
                 <th>S no.</th>
                 <th>Customer</th>
                 <th>Location</th>
-                <th>Reqested on </th>
+                <th>Reqest Date</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {% for req in s1 %}
-                {% if req.7 != 'closed' %}
-                    <tr>
-                        <td> {{loop.index}}</td>
+            {% if req.7 == 'Accepted' or req.7 =='service requested' %} 
+                <!-- {% set sno1 = sno1 + 1 %} -->
+                <tr>
+                        <td>{{loop.index}} </td>
                         <td>{{req.0}}</td> 
                         <td> {{req.1}} / {{req.2}}</td> 
-                        <td> {{req.2}}</td> 
+                        <td> {{req.6}}</td> 
                         <td> 
                             {% if req.7 == 'Accepted' %}
                             <div style="color: green;">{{req.7}}</div>
@@ -106,7 +154,7 @@
                                 <button name="reject" value="{{req.8}}" type="submit">Reject</button>
                             </td> 
                         {% else %}
-                                <td>request closed </td>
+                                <td style="color: red;">Ongoing </td>
                         {% endif %} 
                     </tr>
                 {% endif %}
@@ -122,22 +170,27 @@
                 <th>S no.</th>
                 <th>Customer</th>
                 <th>Location</th>
-                <th>Reqested on </th>
+                <th>Reqest Date </th>
+                <th>Closed Date </th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
+        <!-- {#% set s1_history =s1 | reject(attribute='7',value='Closed')%
+         #} -->
         {% for req in s1 %}
-            {% if req.7 == 'Rejected' or req.7 =='Closed' %} 
+        <!-- {% set sno1 = sno1 + 1 %} -->
+        {% if req.7 == 'Rejected' or req.7 =='Closed' %} 
 
             <tr>
                 <td> {{loop.index}}</td>
                 <td>{{req.0}}</td> 
                 <td> {{req.1}} / {{req.2}}</td> 
-                <td> {{req.2}}</td> 
+                <td> {{req.6}}</td> 
+                <td> {{req.9}}</td> 
                 <td> 
                     {% if req.7 == 'Closed' %}
-                        <div style="color: green;">{{req.7}}</div>
+                        <div style="color: green;">Completed</div>
                     {% elif req.7 == 'Rejected' %}
                         <div style="color: red;">{{req.7}}</div>
                     {% endif %}</td> 
@@ -151,53 +204,4 @@
 </body>
 </html>
 
-    <style>
-        body, h1, p, form {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        background: antiquewhite;
-    }
-    
-    tr:hover {
-        background-color: #d1d8e0;
-    }
-    button:hover {
-        background-color: #1a64b9;
-    }
-
-    table {
-        width: 80%;
-        border-collapse: collapse;
-        font-size: 18px;
-    }
-
-    table, th, td {
-        border: 1px solid #bdc3c7;
-    }
-
-    th {
-        background-color: #3498db;
-        color: white;
-        padding: 10px;
-        font-weight: bold;
-    }
-
-    td {
-        padding: 10px;
-        text-align: center;
-    }
-
-    tr:nth-child(even) {
-        background-color: #ecf0f1;
-    }
-
-    tr:hover {
-        background-color: #d1d8e0;
-    }
-
-    td, th {
-        border-radius: 5px;
-    }
-    </style>
 {% endblock %}

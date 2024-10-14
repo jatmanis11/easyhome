@@ -1,0 +1,72 @@
+{% extends "common.html" %}
+{% block body %}
+
+<body>
+<div style="margin-left: 10%; margin-right:10%">
+<h1> </h1>
+Hy admin_username :)<br>
+<div style="border-radius: 15px; display: flex; background: rgb(231, 230, 229); justify-content: space-between; height: 5%; padding-top: 1%;">
+    <div style="padding-left: 5%; font-size: 200%; color: #4a205a; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
+        Admin Dashboard</div>
+    <div style="display: flex; margin-right: 10%;">
+        <button style="margin-right: 0.5%; padding: 1% 5%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer;" 
+        onclick="location.href='/service';">Services </button>
+        <button style="padding: 1% 5%; margin-right: 0.5%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer;" 
+        onclick="location.href='/admin/pro';">Proffessionals</button>
+        <button style="padding: 1% 5%; margin-right: 10%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer; " 
+        onclick="location.href='/admin';">tbd</button>
+    </div>
+</div>
+
+</div>
+
+<div style="margin-top: 1%; display: inline-block; padding-right: 3%; font-size: 150%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
+    All Registered Proffessionals</div>
+<!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
+<table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+    <thead>
+        <tr>
+            <th>S no.</th>
+            <th>Name | Username</th>
+            <th>Location</th>
+            <th>Date Of Joining </th>
+            <th>Service </th>
+            <th>Rating</th>
+            <th>Status</th>
+            <th>Visit</th>
+        </tr>
+    </thead>
+    <tbody>
+    <!-- {#% set s1_history =s1 | reject(attribute='7',value='Closed')%
+     #} -->
+    {% for req in pros %}
+        <tr>
+            <td> {{loop.index}}</td>
+            <td>{{req.pro_name}} | {{req.pro_username}}</td> 
+            <td> {{req.pro_pincode}} || {{req.pro_address}}</td> 
+            <td> {{req.pro_date}}</td> 
+            <td> {{req.pro_service}}</td> 
+            <td> {{req.pro_rating}}</td> 
+            <td> 
+                {% if req.pro_status == 'reject' or req.pro_status == 'ban' %}
+                    <div style="color: red;">{{req.pro_status}}</div>
+                    {% elif req.pro_status == 'archive' %}
+                        <div style="color: rgb(134, 133, 133);">Archived</div>
+                    {% elif req.pro_status == 'allow' %}
+                        <div style="color: green;">Allowed</div>
+                {% endif %}
+            </td> 
+            <td style="min-width: 100px;">
+                <form   action="pro/{{req.pro_id}}" method="Get">
+                    <button  type="submit">Visit</button> </form>
+                
+            </td>
+        
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+</body>
+{% endblock %}

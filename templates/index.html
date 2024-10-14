@@ -1,4 +1,56 @@
 {% extends "common.html" %}
 {% block body %}
-    <h1> This is homepage {{username}}</h1>
+    <h1 style="margin-left: 10%;"> Welcome To EasyHome Services <a style="color: rgb(99, 160, 160);">{% if username %} {{username}} {% else %} Guest {% endif %} </a></h1>
+    <div style="margin-top: 3%; margin-left: 10%; margin-right: 10%;">    <h2>Services we offer</h2>
+        <div class="container1">
+            {% for service in services %}
+            <div  onclick="window.location.href='/service_page/{{service.service_id}}'" class="service-box">
+                <div class="service-icon">icon</div>
+                <div class="service-title"><b style="color: rgb(201, 45, 34);">{{service.service_name}}</b></div>
+                <div class="service-desc"><b style="color: rgb(45, 119, 115);">{{service.service_desc}}</b></div>
+                <div class="service-desc">  <b style="color: rgb(188, 27, 209);">₹ {{service.service_b_price}}</b></div>
+                <div class="service-desc"><a style="color: rgb(0, 0, 0);">Needs <b style="color: rgb(255, 255, 255);">{{service.time_required}} h </b>complete</a></div>
+                
+                </div>
+                
+            {% endfor %}
+        </div></div>
+    
+    <style>
+    
+        
+    
+        .service-box {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+    
+        .service-box:hover {
+            transform: scale(1.05);
+        }
+    
+        .service-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+    
+    
+        .service-desc {
+            background-color: #f2a654;
+            color: white;
+            padding: 5px 10px;
+            margin-top: 2px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            word-wrap: break-word;
+        }
+    
+    
+    </style>
 {% endblock %} 

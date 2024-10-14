@@ -24,12 +24,12 @@
     <tr>
       <td> {{service.service_name}}</td> 
       <td> {{service.service_desc}}</td> 
-      <td> {{service.service_b_price}}</td> 
-      <td> {{service.time_required}}</td> 
+      <td> ₹ {{service.service_b_price}}</td> 
+      <td> {{service.time_required}} Hours</td> 
       <!-- <td><button type="">delete</button></td> -->
       <td><form action="/service" method="POST">
-        <button name="del" value="{{service.service_id}}" type="submit">Delete</button></td>
-      <td><form action="/service" method="POST">
+        <button name="del" value="{{service.service_id}}" type="submit">Delete</button> ||
+      <form action="/service" method="POST">
         <button name="edit1" value="{{service.service_id}}" type="submit">Edit</button></td>
        </tr>
 {% endfor %}
