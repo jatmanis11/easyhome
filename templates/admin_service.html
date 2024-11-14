@@ -1,0 +1,104 @@
+{% extends "admin.html" %}
+{% block admin %}
+<div class="panel">
+{% for service in services %}
+<div>
+   {{ serv}}
+</div>
+{% endfor %}
+{{services}}
+<div class="flex_button panel">
+
+    <h2> </h2> 
+    <div style="width: 300px; margin-left: 30px;" class="searchbar flex_button" >
+        <form action="/admin_service" >
+            <input style="width: 250px;" margin: 0;" id="searchbox" name="word" value="{{request.args.get('word', '')}}"  required  placeholder="Search Service">                  
+            | <button  style="all: initial;" id='search_button' type="submit">🔎</button>
+            <!-- <label for="search_button">🔎</label> -->
+        </form>
+    </div>
+</div> 
+<div  class="button_end" > 
+    <button  onclick="location.href='/admin_service/add';">
+        Add new service 
+    </button>
+</div>
+<div class="table_lebel">
+    All Services
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Service Name</th>
+            <th>Description</th>
+            <th>Base Price</th>
+            <th>Time needed</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for service in serv %}
+    <tr>
+      <td> {{service.service_name}}</td> 
+      <td> {{service.service_desc}}</td> 
+      <td> ₹ {{service.service_b_price}}</td> 
+      <td> {{service.time_required}} Hours</td> 
+      <!-- <td><button type="">delete</button></td> -->
+      <td><form action="/admin_service" method="POST">
+        <button name="del" value="{{service.service_id}}" type="submit">Delete</button> ||
+      <form action="/admin_service" method="POST">
+        <button name="edit1" value="{{service.service_id}}" type="submit">Edit</button></td>
+       </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<!-- paginator starts here mj -->
+<div class="paginator">
+               
+  <div style="justify-content: flex-start; align-items: center;">
+     Showing Page {{serv.page}} out of {{serv.pages}}
+  </div>
+  <div style="justify-content: flex-start;" >
+      
+  <!-- <div style="display: flex; justify-content: flex-start;"> -->
+  <div style="justify-content: flex-start;">
+
+      {% if serv.has_prev %}
+          <a  id="active_pgntr" href="{{ url_for('service', page=serv.prev_num) }}" >Previous</a>
+      
+      {% else %}
+          <a>Previous</a>
+      
+      {% endif %}
+      
+  </div>
+
+  <div style=" justify-content: center;">
+  <form style="display:flex;" action="{{ url_for('service')}}">
+      <input style="width:40px;" id="page_a" name='page' value="{{serv.page}}">
+      <button type="submit"> Go </button>
+  </form>
+  </div>
+  
+  <div style="justify-content: flex-end;">
+  {% if serv.has_next %}
+
+      
+      <a id="active_pgntr" href="{{ url_for('service', page=serv.next_num) }}">Next</a>
+  {% else %}    
+      <a >Next</a>
+      
+  {% endif %}
+  </div>
+  </div>
+</div>
+<!-- paginator ends here mj   -->
+
+
+</body>
+</html>
+
+
+</div>
+{% endblock %}

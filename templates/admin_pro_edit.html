@@ -1,9 +1,12 @@
-{% extends "common.html" %}
-{% block body %}
+{% extends "admin.html" %}
+{% block admin %}
 
-<div class="container">
+<div class="panel">
+<div class="container" style="max-width: 500px;">
+    
     <table>
-        <tr><td>Name</td><td>{{pro.pro_name}}</td></tr>
+        {% if session.type1 =='admin' %}
+        <tr><td>Name</td><td style="background-color: #fcc100;">{{pro.pro_name}}</td></tr>
         <tr><td>Username</td><td>{{pro.pro_username}} </td></tr>
         <tr><td>Email</td><td>{{pro.pro_email}}</td></tr>
         <tr><td>Address</td><td>{{pro.pro_address}}  </td></tr>
@@ -11,29 +14,52 @@
         <tr><td>Description</td><td>{{pro.pro_desc}}</td></tr>
         <tr><td>Exprience</td><td>{{pro.pro_exp}}</td></tr>
         <tr><td>rating</td><td>{{pro.pro_rating}}</td></tr>
-    </table>
-    <form class="form1" method="POST">
-        <div style="font-size: 150%;">Change Status</div>
-          <select class="select-box" name="pro_status" required>
-            <option value="" disabled selected>{{pro.pro_status}} </option>
-            {% for k in status %}
-                <option value="{{k}}">
-                    {{k}}
-
-                </option>
-            {% endfor %}
-        </select>
         
-        
-        <!-- {{status}} -->
-        <br>
-       
-        <button style="background-color: #0056b3; font-size: large;" class="input-box " type="submit">
-            Save</button>
-    </form>
+        <tr>
+            <td>
+            <div style="max-width: 200px;"> 
+                <form class="form11" method="POST">
+                Status
+            </td>
+            <td> 
+                <select class="select-box" name="pro_status" required>
+                    <option value="" disabled selected>{{pro.pro_status}} </option>
+                    {% for k in status %}
+                        <option value="{{k}}">
+                            {{k}}
+                        </option>
+                    {% endfor %}
+                </select>
+                
+                <!-- {{status}} -->
+                
+            </div>
+        </td></tr>
+        </table></div>
+        <div style="margin-left: 10%; max-width: 200px;">
+            <button style="background-color: #0056b3; font-size: medium;" class="input-box " type="submit">
+                    Save</button>
+            </form>
+        </div>
+                
     </div>
-
-
+           
+    {% else %}
+    <table>
+        <tr><td>Name</td><td style="background-color: #fcc100;">{{pro.pro_name}}</td></tr>
+        <tr><td>Username</td><td>{{pro.pro_username}} </td></tr>
+        <!-- <tr><td>Email</td><td>{{pro.pro_email}}</td></tr> -->
+        <tr><td>Address</td><td>{{pro.pro_address}}  </td></tr>
+        <tr><td>Pincode</td><td>{{pro.pro_pincode}}  </td></tr>
+        <tr><td>Description</td><td>{{pro.pro_desc}}</td></tr>
+        <tr><td>Exprience</td><td>{{pro.pro_exp}}</td></tr>
+        <tr><td>rating</td><td>{{pro.pro_rating}}</td></tr>
+        
+    </table>
+<div>
+    <button onclick="location.href='/service/book/{{pro.pro_id}}';">Book Now </button>
+</div>
+{% endif %}
 
  
 {% endblock %}

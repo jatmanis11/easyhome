@@ -2,19 +2,17 @@
 {% block admin %}
 <div class="panel">
 <div class="table_lebel"> 
-    
-    All Registered Proffessionals</div>
+    All Registered Customers</div>
 <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
 <br>
-    <table >
+    <table style="margin-bottom: 0;">
     <thead>
         <tr>
             <th>S no.</th>
+            <th>Customer Id</th>
             <th>Name | Username</th>
             <th>Location</th>
             <th>Date Of Joining </th>
-            <th>Service </th>
-            <th>Rating</th>
             <th>Status</th>
             <th>Visit</th>
         </tr>
@@ -22,25 +20,24 @@
     <tbody>
     <!-- {#% set s1_history =s1 | reject(attribute='7',value='Closed')%
      #} -->
-    {% for req in pros %}
+    {% for req in custs %}
         <tr>
             <td> {{loop.index}}</td>
-            <td>{{req.pro_name}} | {{req.pro_username}}</td> 
-            <td> {{req.pro_pincode}} || {{req.pro_address}}</td> 
-            <td> {{req.pro_date}}</td> 
-            <td> {{req.pro_service}}</td> 
-            <td> {{req.pro_rating}}</td> 
+            <td>{{req.cust_id}}</td>
+            <td>{{req.cust_name}} | {{req.cust_username}}</td> 
+            <td> {{req.cust_pincode}} || {{req.cust_address}}</td> 
+            <td> {{req.cust_date}}</td> 
             <td> 
-                {% if req.pro_status == 'reject' or req.pro_status == 'ban' %}
-                    <div style="color: red;">{{req.pro_status}}</div>
-                    {% elif req.pro_status == 'archive' %}
+                {% if req.cust_status == 'reject' or req.cust_status == 'ban' %}
+                    <div style="color: red;">{{req.cust_status}}</div>
+                    {% elif req.cust_status == 'archive' %}
                         <div style="color: rgb(134, 133, 133);">Archived</div>
-                    {% elif req.pro_status == 'allow' %}
+                    {% elif req.cust_status == 'allow' %}
                         <div style="color: green;">Allowed</div>
                 {% endif %}
             </td> 
             <td style="min-width: 100px;">
-                <form   action="pro/{{req.pro_id}}" method="Get">
+                <form   action="cust/{{req.cust_id}}" method="Get">
                     <button  type="submit">Visit</button> </form>
                 
             </td>
@@ -50,19 +47,20 @@
     {% endfor %}
     </tbody>
 </table>
+
 <!-- paginator starts here mj -->
 <div class="paginator">
                
     <div style="justify-content: flex-start; align-items: center;">
-       Showing Page {{pros.page}} out of {{pros.pages}}
+       Showing Page {{custs.page}} out of {{custs.pages}}
     </div>
     <div style="justify-content: flex-start;" >
         
     <!-- <div style="display: flex; justify-content: flex-start;"> -->
     <div style="justify-content: flex-start;">
 
-        {% if pros.has_prev %}
-            <a  id="active_pgntr" href="{{ url_for('admin_pro', page=pros.prev_num) }}" >Previous</a>
+        {% if custs.has_prev %}
+            <a  id="active_pgntr" href="{{ url_for('admin_cust', page=custs.prev_num) }}" >Previous</a>
         
         {% else %}
             <a>Previous</a>
@@ -72,17 +70,17 @@
     </div>
 
     <div style=" justify-content: center;">
-    <form style="display:flex;" action="{{ url_for('admin_pro')}}">
-        <input style="width:40px;" id="page_a" name='page' value="{{pros.page}}">
+    <form style="display:flex;" action="{{ url_for('admin_cust')}}">
+        <input style="width:40px;" id="page_a"name='page' value="{{custs.page}}">
         <button type="submit"> Go </button>
     </form>
     </div>
     
     <div style="justify-content: flex-end;">
-    {% if pros.has_next %}
+    {% if custs.has_next %}
 
         
-        <a id="active_pgntr" href="{{ url_for('admin_pro', page=pros.next_num) }}">Next</a>
+        <a id="active_pgntr" href="{{ url_for('admin_cust', page=custs.next_num) }}">Next</a>
     {% else %}    
         <a >Next</a>
         

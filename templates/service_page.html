@@ -1,18 +1,18 @@
 {% extends "common.html" %}
 {% block body %}
-<div style=" margin-left: 10%; ">
+<div class="panel" ">
 
     <div style="text-align: center; font-size: 250%; color: rgb(155, 9, 9); font-weight: bold;">
          {{services.service_name}}</div>
     <!-- <div style="font-size: 150%; color: rgb(15, 15, 19);"> Welcome To EasyHome Dashboard</div> -->
-    <div class="service-title">{{services.service_name}}</div>
-    <div class="service-desc">{{services.service_desc}}</div>
-    <div class="service-desc"> ₹ {{services.service_b_price}}</div>
-    <div class="service-desc">{{services.time_required}}</div>
-</div>
+    <div >{{services.service_name}}</div>
+    <div >{{services.service_desc}}</div>
+    <div > ₹ {{services.service_b_price}}</div>
+    <div >{{services.time_required}}</div>
+
 <!-- {{services}} -->
 <!-- <div  style="height: 5%; margin-top: 3%; padding-left: 80%;" > <button style="padding: 7px 20px; font-size: 18px; border-radius: 8px; background-color: #007bff; cursor: pointer;" onclick="location.href='/service/add';"> Add new service </button></div> -->
-<div style="display: inline-block; margin-left: 10%; padding-right: 3%; font-size: 200%; font-weight: bold; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;">
+<div class="table_lebel">
     Our Best Proffesionals
 </div>
 
@@ -31,6 +31,7 @@
     </thead>
     <tbody>
         {% for pro in pros %}
+        {% if pro.pro_status == 'allow' %}
             <tr>
                 <td> {{pro.pro_name}}</td> 
                 <td> {{pro.pro_desc}}</td> 
@@ -48,12 +49,13 @@
                     </td> 
                 {% endif %}
             </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>
 
 </body>
 </html>
-
+</div>
     
 {% endblock %}

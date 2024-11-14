@@ -1,21 +1,69 @@
 {% extends "common.html" %}
 {% block body %}
 {% set sno1 = 2 %}
-
+<div class='panel'>
+    {%for i in s1 %} {{i.cust_name}} {% endfor %}
 {% if type1 =='cust' %}
 
-    <div style=" margin-left: 10%; ">
-        <div style="font-size: 250%; color: rgb(155, 9, 9); font-weight: bold;"> Hy {{user.cust_name}}</div>
+    <div >
+        <div class="h1_username"> Hy {{user.cust_name}}</div>
         <div style="font-size: 150%; color: rgb(15, 15, 19);"> Welcome To EasyHome Dashboard</div>
     </div>
+    <div class="admin_cont">
+        <div class="admin-box">
+            <table style="margin: auto; width: 350px;">
 
-    <div  style="display:  flex; justify-content: flex-end; height: 5%; margin-top: 3%;" >
-        <button style="padding: 7px 20px; font-size: 18px; border-radius: 8px; margin-right: 10%; cursor: pointer;" onclick="location.href='/services';"> 
-            Request New Service </button></div>
-    <div style="display: inline-block; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
-        Pending Service</div>
-    <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
-    <table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+                <tr>
+                    <td>Address</td>
+                    <td> {{user.cust_address}}| {{user.cust_pincode}}</td>
+                </tr>
+                <tr >
+                    <td> Joined On </td>
+                    <td>{{user.cust_date}}</td>
+                </tr>
+                <tr >
+                    <td> Status</td>
+                    <td>
+                        {% if user.cust_status == 'reject' or user.cust_status == 'ban' %}
+                            <div style="color: red;">{{user.cust_status}}</div>
+                            {% elif user.cust_status == 'archive' %}
+                                <div style="color: rgb(134, 133, 133);">Archived</div>
+                                {% elif user.cust_status == 'allow' %}
+                                <div style="color: green;">Allowed</div>
+                            {% else %}
+                                <div style="color: rgb(109, 32, 253);">None</div>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="admin-box">
+            <table style="margin: auto; width: 350px;">
+                {% for i in accept_count %}
+                    <tr>
+                        <td>
+                            {{i.0}}
+                        </td>
+                        <td>
+                            {{i.1}}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+    </div>
+
+{% if user.cust_status %} 
+    <div class="button_end"  >
+        <button  onclick="location.href='/services';"> 
+            Request New Service 
+        </button>
+    </div>
+    <div id="pend" class="table_lebel">  
+        Pending Service
+    </div>
+    <table>
         <thead>
             <tr>
                 <th>S no.</th>
@@ -29,7 +77,7 @@
 
 
         <tbody>
-            {% for req in s1 %}
+            {% for req in service_pending %}
                 {% if req.5 != 'Closed' and req.5 != 'Rejected' %}
                     <tr>
                         <td> {{loop.index}}</td> 
@@ -47,7 +95,7 @@
                             {% endif %}</td> 
                         <td>
                             {% if req.5 == 'Accepted' %}
-                                <form action="/dashboard" method="POST">
+                                <form action="/dashboard#pend" method="POST">
                                     <button name="close" value="{{req.6}}" type="submit">Close it</button></form>
                             {% elif req.5 == 'service requested' %}
                                 Wait for request accept
@@ -58,11 +106,54 @@
                 {% endif %}
             {% endfor %}
         </tbody>
-    </table></div>
-    <div style="display: inline-block; margin-top: 10px; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
+    </table>
+    <!-- paginator starts here mj -->
+<div class="paginator">
+               
+    <div style="justify-content: flex-start; align-items: center;">
+       Showing Page {{service_pending.page}} out of {{service_pending.pages}}
+    </div>
+    <div style="justify-content: flex-start;" >
+        
+    <!-- <div style="display: flex; justify-content: flex-start;"> -->
+    <div style="justify-content: flex-start;">
+  
+        {% if service_pending.has_prev %}
+            <a  id="active_pgntr" href="{{ url_for('dashboard_user', page_p=service_pending.prev_num) }}#pend" >Previous</a>
+        
+        {% else %}
+            <a>Previous</a>
+        
+        {% endif %}
+        
+    </div>
+  
+    <div style=" justify-content: center;">
+    <form style="display:flex;" action="{{ url_for('dashboard_user')}}#pend">
+        <input style="width:40px;" id="page_a" name='page_p' value="{{service_pending.page}}">
+        <button type="submit"> Go </button>
+    </form>
+    </div>
+    
+    <div style="justify-content: flex-end;">
+    {% if service_pending.has_next %}
+  
+        
+        <a id="active_pgntr" href="{{ url_for('dashboard_user', page_p=service_pending.next_num) }}#pend">Next</a>
+    {% else %}    
+        <a >Next</a>
+        
+    {% endif %}
+    </div>
+    </div>
+  </div>
+  <!-- paginator ends here mj   -->
+  
+
+
+    <div id="hist" class="table_lebel">
         Service History</div>
-    <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
-    <table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+    <table >
         <thead>
             <tr>
                 <th>S no.</th>
@@ -74,7 +165,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for req in s1 %}
+        {% for req in service_history %}
         {% if req.5 == 'Rejected' or req.5 =='Closed' %} 
             <tr>
                 <td>{{loop.index}} </td>
@@ -99,6 +190,7 @@
                         2024-10-09,4
                         Closed,5
                         13,6
+                        
                         1.0,7
                         best service,8
                         Closed,5                     -->       
@@ -107,18 +199,123 @@
         {% endfor %}
         </tbody>
     </table>
-{% elif type1 =='pro' %}
-    <div style=" margin-left: 10%; margin-bottom: 2%; ">
-
-        <div style="font-size: 250%; color: rgb(155, 9, 9); font-weight: bold;">  Hy {{user.pro_username}}</div>
-        <div style="font-size: 150%; color: rgb(15, 15, 19);"> Welcome To EasyHome Dashboard</div>
-        {{user.pro_address}} | {{user.pro_pincode}}<br>
-        {{user_serv.service_name}}<br>
+        <!-- paginator starts here mj -->
+<div class="paginator">
+               
+    <div style="justify-content: flex-start; align-items: center;">
+       Showing Page {{service_history.page}} out of {{service_history.pages}}
     </div>
-    <div style="display: inline-block; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
+    <div style="justify-content: flex-start;" >
+        
+    <!-- <div style="display: flex; justify-content: flex-start;"> -->
+    <div style="justify-content: flex-start;">
+  
+        {% if service_history.has_prev %}
+            <a  id="active_pgntr" href="{{ url_for('dashboard_user', page_h=service_history.prev_num) }}#hist" >Previous</a>
+        
+        {% else %}
+            <a>Previous</a>
+        
+        {% endif %}
+        
+    </div>
+  
+    <div style=" justify-content: center;">
+    <form style="display:flex;" action="{{ url_for('dashboard_user')}}#hist">
+        <input style="width:40px;" id="page_a" name='page_h' value="{{service_history.page}}">
+        <button type="submit"> Go </button>
+    </form>
+    </div>
+    
+    <div style="justify-content: flex-end;">
+    {% if service_history.has_next %}
+  
+        <a id="active_pgntr" href="{{ url_for('dashboard_user', page_h=service_history.next_num) }}#hist">Next</a>
+    {% else %}    
+        <a >Next</a>
+        
+    {% endif %}
+    </div>
+    </div>
+  </div>
+       <!-- paginator ends here mj   -->
+       {% else %}
+       <div class="container"    >
+         <div class='admin-box'>
+             <i ></i>
+         
+         <!-- Verification Message -->
+         <h4 >Verification Pending</h4>
+         <p c>
+             Your profile is currently under review. Please wait until the admin verifies your profile.
+         </p>
+         <p >
+             You will receive a notification once the verification process is complete.
+         </p>
+         <!-- Refresh Button or Link to Dashboard -->
+         <a href="/dashboard" >Refresh</a>
+     </div>
+</div>
+
+  {% endif %}
+
+
+{% elif type1 =='pro' %}
+    <div style="  margin-bottom: 2%; ">
+
+        <div class="h1_username">  Hy {{user.pro_username}}</div>
+        <div style="font-size: 150%; color: rgb(15, 15, 19);"> Welcome To EasyHome Dashboard</div>
+        <div class="container">
+            <div class="admin-box">
+                <div class="table_lebel">Your Info </div>
+                <table style="margin: auto; width: 350px;">
+                    <tr>
+                        <td>Address</td>
+                        <td> {{user.pro_address}}| {{user.pro_pincode}}</td>
+                    </tr>
+                    <tr style="background-color: white;">
+                        <td> Service</td>
+                        <td>{{user_serv.service_name}}</td>
+                    </tr>
+                    <tr style="background-color: white;">
+                        <td> Status</td>
+                        <td>
+                            {% if user.pro_status == 'reject' or user.pro_status == 'ban' %}
+                                <div style="color: red;">{{user.pro_status}}</div>
+                                {% elif user.pro_status == 'archive' %}
+                                    <div style="color: rgb(134, 133, 133);">Archived</div>
+                                {% elif user.pro_status == 'allow' %}
+                                    <div style="color: green;">Allowed</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+            <!-- <tr><td>{{accept_count}}</td></tr> -->
+                </table>
+            </div>
+            <div class="admin-box">
+                <div class="table_lebel">Summary </div>
+                <table style="margin: auto; width: 350px;">
+                    {% for i in accept_count %}
+                    <tr>
+                        <td>
+                           {{i.0}}
+                        </td>
+                        <td>
+                            {{i.1}}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div> 
+        <br>
+        <br>
+    </div>
+    {% if user.pro_status %}
+    <div id="pend" class="table_lebel"> 
         Pending Services</div>
     <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
-    <table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+    <table>
         <thead>
             <tr>
                 <th>S no.</th>
@@ -127,10 +324,11 @@
                 <th>Reqest Date</th>
                 <th>Status</th>
                 <th>Action</th>
+                
             </tr>
         </thead>
         <tbody>
-            {% for req in s1 %}
+            {% for req in service_pending %}
             {% if req.7 == 'Accepted' or req.7 =='service requested' %} 
                 <!-- {% set sno1 = sno1 + 1 %} -->
                 <tr>
@@ -149,8 +347,12 @@
                         </td> 
                         
                         {% if req.7 =='service requested' %}
-                            <td><form action="/dashboard" method="POST"> 
-                                <button name="accept" value="{{req.8}}" type="submit">Accept</button>
+                            <td><form action="/dashboard#pend" method="POST"> 
+                                {% if accept_count ==  0 %}
+                                    <button name="accept" value="{{req.8}}" type="submit">Accept</button>
+                                {% else %}
+                                    <button style="cursor: not-allowed ;"> Pending limit reached.</button>
+                                {% endif %}
                                 <button name="reject" value="{{req.8}}" type="submit">Reject</button>
                             </td> 
                         {% else %}
@@ -161,10 +363,55 @@
             {% endfor %}
         </tbody>
     </table>
-    <div style="margin-top: 1%; display: inline-block; padding-right: 3%; font-size: 200%; font-weight: bold; margin-left: 10%; border-radius: 8px; margin-right: 10%; padding-top: 0.5%; padding-bottom: 0.5%; background-color: #fcfeff;"> 
+<!-- paginator starts here mj -->
+<div class="paginator">
+               
+    <div style="justify-content: flex-start; align-items: center;">
+       Showing Page {{service_pending.page}} out of {{service_pending.pages}}
+    </div>
+    <div style="justify-content: flex-start;" >
+        
+    <!-- <div style="display: flex; justify-content: flex-start;"> -->
+    <div style="justify-content: flex-start;">
+  
+        {% if service_pending.has_prev %}
+            <a  id="active_pgntr" href="{{ url_for('dashboard_user', page_p=service_pending.prev_num) }}#pend">Previous</a>
+        
+        {% else %}
+            <a>Previous</a>
+        
+        {% endif %}
+        
+    </div>
+  
+    <div style=" justify-content: center;">
+    <form style="display:flex;" action="{{ url_for('dashboard_user')}}#pend">
+        <input style="width:40px;" id="page_a" name='page_p' value="{{service_pending.page}}">
+        <button type="submit"> Go </button>
+    </form>
+    </div>
+    
+    <div style="justify-content: flex-end;">
+    {% if service_pending.has_next %}
+  
+        
+        <a id="active_pgntr" href="{{ url_for('dashboard_user', page_p=service_pending.next_num) }}#pend">Next</a>
+    {% else %}    
+        <a >Next</a>
+        
+    {% endif %}
+    </div>
+    </div>
+  </div>
+  <!-- paginator ends here mj   -->
+  
+
+
+
+    <div id="hist" class="table_lebel">
         Service History</div>
     <!-- <div style=" margin-left: 10%; border-radius: 8px; margin-right: 10%;  padding-bottom: 0.5%; background-color: #fcfeff;"> -->
-    <table style=" margin-left: 10%; border-radius: 8px; background-color: #fcfeff;">
+    <table >
         <thead>
             <tr>
                 <th>S no.</th>
@@ -172,13 +419,15 @@
                 <th>Location</th>
                 <th>Reqest Date </th>
                 <th>Closed Date </th>
+                <th>Rating | Remarks</th>
                 <th>Status</th>
+
             </tr>
         </thead>
         <tbody>
         <!-- {#% set s1_history =s1 | reject(attribute='7',value='Closed')%
          #} -->
-        {% for req in s1 %}
+        {% for req in service_history %}
         <!-- {% set sno1 = sno1 + 1 %} -->
         {% if req.7 == 'Rejected' or req.7 =='Closed' %} 
 
@@ -188,7 +437,12 @@
                 <td> {{req.1}} / {{req.2}}</td> 
                 <td> {{req.6}}</td> 
                 <td> {{req.9}}</td> 
+                <td>
+                    {% if req.10 %} {{req.10}} |{% endif %} 
+                    {% if req.11 %} {{req.11}} {% endif %}
+                </td>
                 <td> 
+                    {{req.7}}
                     {% if req.7 == 'Closed' %}
                         <div style="color: green;">Completed</div>
                     {% elif req.7 == 'Rejected' %}
@@ -200,8 +454,66 @@
         {% endfor %}
         </tbody>
     </table>
+        <!-- paginator starts here mj -->
+        <div class="paginator">
+               
+            <div style="justify-content: flex-start; align-items: center;">
+               Showing Page {{service_history.page}} out of {{service_history.pages}}
+            </div>
+            <div style="justify-content: flex-start;" >
+                
+            <!-- <div style="display: flex; justify-content: flex-start;"> -->
+            <div style="justify-content: flex-start;">
+          
+                {% if service_history.has_prev %}
+                    <a  id="active_pgntr" href="{{ url_for('dashboard_user', page_h=service_history.prev_num) }}#hist" >Previous</a>
+                
+                {% else %}
+                    <a>Previous</a>
+                
+                {% endif %}
+                
+            </div>
+          
+            <div style=" justify-content: center;">
+            <form style="display:flex;" action="{{ url_for('dashboard_user')}}#hist">
+                <input style="width:40px;" id="page_a" name='page_h' value="{{service_history.page}}">
+                <button type="submit"> Go </button>
+            </form>
+            </div>
+            
+            <div style="justify-content: flex-end;">
+            {% if service_history.has_next %}
+          
+                <a id="active_pgntr" href="{{ url_for('dashboard_user', page_h=service_history.next_num) }}#hist">Next</a>
+            {% else %}    
+                <a >Next</a>
+                
+            {% endif %}
+            </div>
+            </div>
+          </div>
+          <!-- paginator ends here mj   -->
+    {% else %}
+          <div class="container"    >
+            <div class='admin-box'>
+                <i ></i>
+            
+            <!-- Verification Message -->
+            <h4 >Verification Pending</h4>
+            <p c>
+                Your profile is currently under review. Please wait until the admin verifies your profile.
+            </p>
+            <p >
+                You will receive a notification once the verification process is complete.
+            </p>
+            <!-- Refresh Button or Link to Dashboard -->
+            <a href="/dashboard" >Refresh</a>
+        </div>
+   </div>
+
+    {% endif %}
 {% endif %}
-</body>
-</html>
+</div>
 
 {% endblock %}

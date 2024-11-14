@@ -1,0 +1,38 @@
+{% extends "admin.html" %}
+{% block admin %}
+<!-- {{services}} -->
+{% if flag1 %}
+{% if services %}
+<div class="container">
+    <form  class="form1"  method="POST">
+
+        <div style="font-size: 150%;">Edit Service</div>
+        <input autocomplete="off" class="input-box" value="{{services.service_name}}"  autofocus name="service_name" placeholder="Service Name" type="text" required><br>
+        <input autocomplete="off" class="input-box"value="{{services.service_desc}}"  autofocus name="desc" placeholder="Description" type="text" required><br>
+        <input autocomplete="off" class="input-box" value="{{services.time_required}}"  autofocus name="service_time" placeholder="Min. time to complete ( in hours)" type="number" required><br>
+        <input autocomplete="off" class="input-box", value="{{services.service_b_price}}" autofocus name="service_price" placeholder="Base Price in(₹)" type="number" required><br>
+        <br>
+        {% if flag %}<div style='color: red; text-align: center;'> {{flag}}</div><br>{% endif %}
+
+        <button style="background-color: #0056b3; font-size: large;" class="input-box" type="submit">Edit service</button>
+    </form>
+    </div>
+    {% endif 
+%}
+{% elif flag2 %}
+<div class="container">
+        <form  class="form1" method="POST">
+    
+            <div style="font-size: 150%;">Add New Service</div>
+            <input autocomplete="off" class="input-box" autofocus name="service_name" placeholder="Service Name" type="text" required><br>
+            <input autocomplete="off" class="input-box" autofocus name="desc" placeholder="Description" type="text" required><br>
+            <input autocomplete="off" class="input-box" autofocus name="service_time" placeholder="Min. time to complete ( in hours)" type="number" required><br>
+            <input autocomplete="off" class="input-box" autofocus name="service_price" placeholder="Base Price (₹)" type="number" required><br>
+            <br>
+            {% if flag %}<div style='color: red; text-align: center;'> {{flag}}</div><br>{% endif %}
+    
+            <button style="background-color: #0056b3; font-size: large;" class="input-box" type="submit">+ new service</button>
+        </form>
+        </div>
+{% endif  %}
+{% endblock %}

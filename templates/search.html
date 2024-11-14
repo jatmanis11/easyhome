@@ -1,0 +1,222 @@
+{% extends "common.html" %}
+{% block body %}
+<div class="panel">
+
+<!-- search start  -->
+
+<!-- search ends  -->
+    <!--  kl -->
+<table style="width: 100%; margin-bottom: 0;">
+    {%  if pros %}
+    <thead>
+        <tr>
+            <th>S no.</th>
+            <th>Name | Username</th>
+            <th>Location</th>
+            <th>Date Of Joining </th>
+            <th>Service </th>
+            <th>Rating</th>
+            <th>Status</th>
+            <th>Visit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for req in pros %}
+        
+        <tr>
+            <td> {{loop.index}}</td>
+            <td> {{req.0.pro_name}} | {{req.0.pro_username}}</td> 
+            <td> {{req.0.pro_pincode}} || {{req.0.pro_address}}</td> 
+            <td> {{req.0.pro_date}}</td> 
+            <td> {{req.1}}</td> 
+            <td> {{req.0.pro_rating}}</td> 
+            <td> 
+                {% if req.0.pro_status == 'reject' or req.0.pro_status == 'ban' %}
+                    <div style="color: red;">{{req.0.pro_status}}</div>
+                    {% elif req.0.pro_status == 'archive' %}
+                        <div style="color: rgb(134, 133, 133);">Archived</div>
+                    {% elif req.0.pro_status == 'allow' %}
+                        <div style="color: green;">Allowed</div>
+                {% endif %}
+            </td> 
+            <td style="min-width: 100px;">
+                <form   action="pro/{{req.0.pro_id}}" method="Get">
+                    <button  type="submit">Visit</button> </form>
+                
+            </td>
+        
+        </tr>
+
+    {% endfor %}
+    </tbody>
+    
+
+
+    {% elif custs %}
+        <thead>
+            <tr>
+                <th>S no.</th>
+                <th>Customer Id</th>
+                <th>Name | Username</th>
+                <th>Location</th>
+                <th>Date Of Joining </th>
+                <th>Service </th>
+                <th>Rating</th>
+                <th>Status</th>
+                <th>Visit</th>
+            </tr>
+        </thead>
+        <tbody>
+        <!-- {#% set s1_history =s1 | reject(attribute='7',value='Closed')%
+         #} -->
+        {% for req in custs %}
+            <tr>
+                <td> {{loop.index}}</td>
+                <td>{{req.cust_id}}</td>
+                <td>{{req.cust_name}} | {{req.cust_username}}</td> 
+                <td> {{req.cust_pincode}} || {{req.cust_address}}</td> 
+                <td> {{req.cust_date}}</td> 
+                <td> {{req.cust_service}}</td> 
+                <td> {{req.cust_rating}}</td> 
+                <td> 
+                    {% if req.pro_status == 'reject' or req.pro_status == 'ban' %}
+                        <div style="color: red;">{{req.pro_status}}</div>
+                        {% elif req.pro_status == 'archive' %}
+                            <div style="color: rgb(134, 133, 133);">Archived</div>
+                        {% elif req.pro_status == 'allow' %}
+                            <div style="color: green;">Allowed</div>
+                    {% endif %}
+                </td> 
+                <td style="min-width: 100px;">
+                    <form   action="cust/{{req.cust_id}}" method="Get">
+                        <button  type="submit">Visit</button> </form>
+                    
+                </td>
+            
+            </tr>
+    
+        {% endfor %}
+        </tbody>
+
+       
+    {% elif reqs %} 
+    <thead>
+                <tr>
+                    <th> S No.</th>
+                   v<th> request ID </th>
+                   <th> 
+                        Customer
+                    </th>
+                    <th> location |pincode</th>
+                    <th> professional</th>
+                    <th> service</th>
+                    <th> req date</th>
+                    <th> status</th>
+                    <th>closed on </th>
+                    <th>Remarks| review </th>
+
+                </tr> 
+            </thead>
+        {% for req in reqs %}
+           
+        <tbody>
+            {% if req.4 ==session.username or req.12 ==session.username or session.type1 =='admin' %}
+            <tr>
+                <td>{{loop.index}} </td>
+                <td> {{req.8}}</td>
+                <td> {{req.0}}</td>
+                <td> {{req.1}} / {{req.2}}</td> 
+                <td> {{req.3}}</td> 
+                <!-- <td> {{req.4}}</td>  -->
+                <td> {{req.5}}</td> 
+                <td> {{req.6}}</td> 
+         
+            <!-- ('cust1', 'delhi', '111222', 'pro1', 'upro1', 'electrician', '2024-09-26', 
+             'Closed', 7, '2024-09-26', 'best1 ', 4.0) -->
+                <td> 
+                    {% if req.7 == 'Closed' %}
+                        <div style="color: green;">{{req.7}}</div>
+                        {% elif req.7 == 'Rejected' %}
+                        <div style="color: red;">{{req.7}}</div>
+                        {% elif req.7 == 'Accepted' %}
+                        <div style="color: red;">{{req.7}}</div>
+                        {% else %}                         
+                            <div style="color: grey;">{{req.7}}</div>
+                        {% endif %}
+                </td> 
+                <td>{% if req.9 %} {{req.9}} {% endif %}</td>
+                    <td> 
+                        {% if req.10 %}{{req.10}} |{% endif %}    
+                        {% if req.11 %}{{req.11}}{% endif %}                   
+                    </td> 
+                        <!-- cust3,0
+                        pro1,1
+                        upro1,2
+                        furniture ,3
+                        2024-10-09,4
+                        Closed,5
+                        13,6
+                        1.0,7
+                        best service,8
+                        Closed,5                     -->       
+            </tr>
+            {% endif %}
+            
+                {% endfor %}
+            </tbody>
+            {% endif %}
+        </table>
+
+
+            <div class="paginator">
+               
+                <div style="justify-content: flex-start; align-items: center;">
+                   Showing Page {{reqs.page}} out of {{reqs.pages}}
+                </div>
+                <div style="justify-content: flex-start;" >
+                    
+                <!-- <div style="display: flex; justify-content: flex-start;"> -->
+                <div style="justify-content: flex-start;">
+
+                    {% if reqs.has_prev %}
+                        <a  id="active_pgntr" href="{{ url_for('search', page=reqs.prev_num, word=word, type=type1) }}" >Previous</a>
+                    
+                    {% else %}
+                        <a>Previous</a>
+                    
+                    {% endif %}
+                    
+                </div>
+
+                <div style=" justify-content: center;">
+                <form style="display:flex;" action="{{ url_for('search')}}">
+                    <input style="width:40px;" id="page_a"name='page' value="{{reqs.page}}"> 
+                    <input style="display: none ;" name="type" id="page_a"  value="{{type1}}"> 
+                    <input style="display: none ;" name="word"  id="page_a" value="{{word}}"> 
+                    <button type="submit"> Go </button>
+                </form>
+                </div>
+                
+                <div style="justify-content: flex-end;">
+                {% if reqs.has_next %}
+
+                    
+                    <a id="active_pgntr" href="{{ url_for('search', page=reqs.next_num, word=word, type=type1) }}">Next</a>
+                {% else %}    
+                    <a >Next</a>
+                    
+                {% endif %}
+                </div>
+                </div>
+            </div>
+            <!-- paginatorr ends here mj -->
+        </div>
+        
+        
+
+
+
+\<!-- <button onclick="location.href='#searchPanel';" >Search</button> -->
+
+</div>
+{% endblock %}

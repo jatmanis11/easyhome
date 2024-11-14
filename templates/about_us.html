@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Button Controlled Input Type</title>
+</head>
+<body>
+    <form>
+        
+    <!-- original nichhee  -->
+        <div  class="search_type1">                       
+            <input type="radio" name="type" value="pro" id="pro" onclick="setInputType('text')" required>
+                <label for="pro"> pro</label>
+            <input type="radio" name="type" id="cust" onclick="setInputType('text')" value="cust" required>
+                <label for="cust">cust</label>
+            <input type="radio" name="type" id="req" onclick="setInputType('number')" value="req" required>
+                <label  for="req"> service Reqests</label>
+        </div>
+        <div class="searchbar flex_button" >
+            <input id="searchbox" name="word" value="{{request.args.get('word', '')}}"  required  placeholder="search">                  
+            |<button id='search_button' type="submit">🔎</button>
+        </div> 
+    </form>
+    <script>
+        function setInputType(type) {
+            document.getElementById('searchbox').type = type;
+        }
+    </script>
+</body>
+</html>
