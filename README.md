@@ -8,9 +8,9 @@ pip install -r requirements.txt
 **Run App**
 python -m flask run
 
-**To create admin Run command **
+**To create admin Run command**
 flask create_superuser
 
-**already set admin credentials are **
-username: jatmanis1
+**already set admin credentials are**
+username: jatmanis1,
 password: 123
