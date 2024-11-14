@@ -4,6 +4,7 @@ _cd easyhome_
 
 **Install Dependecies**:-
 _pip install -r requirements.txt_
+
 **Run App**:-
 _python -m flask run_
 
