@@ -29,6 +29,7 @@
 <table>
     <thead>
         <tr>
+            <th>Service ID</th>
             <th>Service Name</th>
             <th>Description</th>
             <th>Base Price</th>
@@ -39,6 +40,7 @@
     <tbody>
     {% for service in serv %}
     <tr>
+      <td> {{service.service_id}}</td> 
       <td> {{service.service_name}}</td> 
       <td> {{service.service_desc}}</td> 
       <td> ₹ {{service.service_b_price}}</td> 

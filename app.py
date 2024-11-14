@@ -213,6 +213,9 @@ def search():
     # print(type1)
     page = request.args.get('page', 1, type=int) 
     per_page = 5
+    uid = session.get('username')
+    # cust1 =  Cust.query.filter(Cust.cust_username == uid).first()
+    # cust_id1 = cust1.cust_id
     if query and type1:
         if type1 =='pro':
             pros = db.session.query(Pro, Services.service_name).join(Services, Pro.pro_service == Services.service_id).filter(or_ (Pro.pro_username.like(f'%{query}%') , Pro.pro_address.like(f'%{query}%'), Pro.pro_pincode.like(f'%{query}%'))).order_by(desc(Pro.pro_rating)).paginate(page=page, per_page=per_page)
@@ -228,7 +231,14 @@ def search():
                  Service_request.req_date, Service_request.req_status, Service_request.req_id,
                    Service_request.req_completed_date , Service_request.req_remark, Service_request.req_rating, Cust.cust_username).join(Services,
             Service_request.req_service_id == Services.service_id).join(Pro, Service_request.req_pro_id == Pro.pro_id).join(Cust,
-            Service_request.req_cust_id == Cust.cust_id).filter(Service_request.req_id.like(f'%{query}%')).paginate(page=page, per_page=per_page)        
+            Service_request.req_cust_id == Cust.cust_id).filter( Service_request.req_id.like(f'%{query}%')).paginate(page=page, per_page=per_page)
+            # for i in reqs:
+            #     print(i.cust_username)
+            #     if uid not in i:
+            #         reqs.pop(i)
+            # for i in reqs:
+            #     print(i.cust_username)
+
     return render_template('search.html', pros=pros,custs=custs, reqs=reqs, word = query, type1=type1)
 
 
@@ -408,7 +418,7 @@ def admin_pro_edit(pro_id):
     pro_id1 = pro_id
     pro1 =Pro.query.filter(Pro.pro_id == pro_id1).first()
     # print(pro1)
-    status = ['ban', 'allow', 'reject','archive']
+    status = ['ban', 'allow','archive']
     
     if request.method =='POST': 
         status1 =str(request.form.get('pro_status'))
@@ -436,7 +446,7 @@ def admin_cust_edit(cust_id):
     cust_id1 = cust_id
     cust1 =Cust.query.filter(Cust.cust_id == cust_id1).first()
 
-    status = ['ban', 'allow', 'reject','archive']
+    status = ['ban', 'allow', 'archive']
     
     if request.method =='POST': 
         status1 =str(request.form.get('cust_status'))
@@ -591,7 +601,7 @@ def service():
         service1= Services.query.get(del1)
         if service1:
             # print(service1)
-            pros= Pro.query.filter(Pro.pro_service == service1).all()
+            pros= Pro.query.filter(Pro.pro_service == service1.service_id).all()
             # print(pros)
             for i in pros:
                 i.pro_status = "ban"
