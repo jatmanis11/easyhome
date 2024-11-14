@@ -1,7 +1,8 @@
 {% extends "common.html" %}
 {% block body %}
     <h1 style="margin-left: 10%;"> Welcome To EasyHome Services <a style="color: rgb(99, 160, 160);">{% if username %} {{username}} {% else %} Guest {% endif %} </a></h1>
-    <div style="margin-top: 3%; margin-left: 10%; margin-right: 10%;">    <h2>Services we offer</h2>
+    <div class = "panel" style="margin-top: 3%;">    
+        <h2>Services we offer</h2>
         <div class="container1">
             {% for service in services %}
             <div  onclick="window.location.href='/service_page/{{service.service_id}}'" class="service-box">
@@ -18,38 +19,6 @@
     
     <style>
     
-        
-    
-        .service-box {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.2s ease;
-        }
-    
-        .service-box:hover {
-            transform: scale(1.05);
-        }
-    
-        .service-title {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            font-weight: bold;
-            word-wrap: break-word;
-        }
-    
-    
-        .service-desc {
-            background-color: #f2a654;
-            color: white;
-            padding: 5px 10px;
-            margin-top: 2px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            word-wrap: break-word;
-        }
     
     
     </style>

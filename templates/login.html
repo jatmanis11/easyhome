@@ -1,10 +1,13 @@
 {% extends "common.html" %}
 {% block body %}
-<div  style="display: flex; justify-content: flex-end; height: 5%; margin-top: 5%; " > 
-    <button style="padding: 7px 20px; font-size: 18px; border-radius: 8px; background-color: #ffffff; cursor: pointer;" onclick="location.href='/register_c';"> Register as Customer </button>
-    <button style=" padding: 7px 20px; font-size: 18px; border-radius: 8px; background-color: #ffffff; cursor: pointer;" onclick="location.href='/register';"> Register as Proffesional </button>
+<!-- <div class="flex_button" > 
+    <button onclick="location.href='/register_c';"> Register as Customer </button>
+    <button onclick="location.href='/register';"> Register as Proffesional </button>
+</div> -->
+<div class="login_top" > 
+    <button onclick="location.href='/register_c';"> Register as Customer </button>
+    <button onclick="location.href='/register';"> Register as Proffesional </button>
 </div>
-
 <div class="container">
     <form  class="form1" method="POST">
 
@@ -18,52 +21,4 @@
     </form>
     </div>
 
-    <style>
-        body, h1, form {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        background: antiquewhite;
-    }
-    
-    .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 80%;
-        padding: 20px;
-    }
-/*     
-    form {
-        width: 100%;
-        max-width: 500px; 
-        background: #f9f9f9;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1); 
-    } */
-    
-    
-    .form-group {
-        margin-bottom: 15px;
-    }
-    
-    
-    .input-box, .select-box {
-        width: 100%; 
-        padding: 10px;
-        font-size: 1em;
-        border: 1px solid #ddd; 
-        border-radius: 4px;
-        margin-top: 0.3cap;
-    }
-    
-    
-    
-    
-        
-    
-    </style>
 {% endblock %}
-
-    {{k1}}

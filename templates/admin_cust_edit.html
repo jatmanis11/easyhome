@@ -1,0 +1,56 @@
+{% extends "admin.html" %}
+{% block admin %}
+<div class="panel">
+<div class="container" style="max-width: 500px;">
+    <table>
+        {% if session.type1 =='admin' %}
+
+        <tr><td>Name</td><td style="background-color: #fcc100;">{{cust.cust_name}}</td></tr>
+        <tr><td>Username</td><td>{{cust.cust_username}} </td></tr>
+        <tr><td>Email</td><td>{{cust.cust_email}}</td></tr>
+        <tr><td>Address</td><td>{{cust.cust_address}}  </td></tr>
+        <tr><td>Pincode</td><td>{{cust.cust_pincode}}  </td></tr>
+        <tr>
+            <td>
+            <div style="max-width: 200px;"> 
+            
+                <form class="form11" method="POST">
+                Status
+            </td>
+            <td> 
+                <select class="select-box" name="cust_status" required>
+                    <option value="" disabled selected>{{cust.cust_status}} </option>
+                    {% for k in status %}
+                        <option value="{{k}}">
+                            {{k}}
+                        </option>
+                    {% endfor %}
+                </select>
+                
+                <!-- {{status}} -->
+                
+            </div>
+        </td></tr>
+        </table></div>
+        <div style="margin-left: 10%; max-width: 200px;">
+            <button style="background-color: #0056b3; font-size: medium;" class="input-box " type="submit">
+                    Save</button>
+            </form>
+        
+         
+    {% else %}
+    <tr><td>Name</td><td style="background-color: #fcc100;">{{cust.cust_name}}</td></tr>
+    <tr><td>Username</td><td>{{cust.cust_username}} </td></tr>
+    <!-- <tr><td>Email</td><td>{{cust.cust_email}}</td></tr> -->
+    <tr><td>Address</td><td>{{cust.cust_address}}  </td></tr>
+    <tr><td>Pincode</td><td>{{cust.cust_pincode}}  </td></tr>
+    
+</table>
+{% endif %}
+    </div>
+                
+</div>
+ 
+
+
+{% endblock %}

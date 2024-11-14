@@ -4,141 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %} </title>
-    <link href="static/style.css" rel="stylesheet">
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
-
+    
+     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="{{url_for('static',filename='style1.css')}}" > -->
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}" >
+    <!-- <link rel="stylesheet" href="{{url_for('static',filename='search.css')}}" > -->
 </head>
 <body1>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
-
-    <div style="position: fixed; top: 0; display: flex; background: rgb(197, 145, 67);; justify-content: space-between; height: 6%; width: 100%; padding-top: 1%; padding-bottom: 1%; z-index: 1000;">
-        <div style="padding-left: 5%; font-family: 'Great Vibes', cursive; font-size: 200%; font-weight: bold; color: #2C3E50; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
-            EasyHome</div>
+    {% block xxx %}{% endblock %}
+    <div class="nav-bar">
+        <div class="easyhome">
+            EasyHome 
+        </div>
         <div style="display: flex; margin-right: 10%;">
-            <button style="margin-right: 0.5%; padding: 1% 5%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer;" onclick="location.href='/login';">
-                 Login </button>
-            <button style="padding: 1% 5%; margin-right: 0.5%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer;" onclick="location.href='/';">
-                 Home </button>
-            {% if session.username %}  
-            <button style="padding: 1% 5%; margin-right: 1%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer; " onclick="location.href='/dashboard';">
-                {{session.username}}
+  <!-- search start  -->
+            <button>
+                <label for="search1">
+                    search
+                </label>
             </button>
-            <button style="padding: 1% 5%; margin-right: 10%; font-size: 100%; border-radius: 8px; background-color: #ffffff; cursor: pointer; " onclick="location.href='/logout';">
-                logout
-            </button>
+             <!-- working a -->
+            <!-- <div id="searchPanel">
+                <a href="#" class="search_close">&times;</a>
+                <form action=/search> 
+                    <div  class="search_type1">                       
+                        <input type="radio" name="type" value="pro" id="pro" required>
+                            <label for="pro"> pro</label>
+                        <input type="radio" name="type" id="cust" value="cust" required>
+                            <label for="cust">cust</label>
+                        <input type="radio" name="type" id="req" value="req" required>
+                            <label for="req"> service Reqests</label>
+                    </div>
+                    <div class="searchbar flex_button" >
+                        <input id="searchbox" name="word" value="{{request.args.get('word', '')}}"  required type="text" placeholder="search">                  
+                        |<button id='search_button' type="submit">🔎</button>
+                    </div> 
+                </form> -->
+        
+            {% block search %}{% endblock %} 
+
+<!-- search end -->
+            <button onclick="location.href='/';">
+                Home </button>
+                <button onclick="location.href='/services';">
+                    Services </button>
+            {% if session.username %}
+             
+            <a  onclick="location.href='/dashboard';">
+                <!-- {{session.username}}   --><img class='nav-icon' src="{{url_for('static' , filename='icons/profile.png') }}" alt="User"/>
+                 <p>profile</p>
+            </a>
+            <a  onclick="location.href='/logout';">
+                <img class='nav-icon' src="{{url_for('static' , filename='icons/logout.png') }}" alt="logout"/>
+                <p>logout</p>
+
+            </a>
+            {% else %}
+            <button  onclick="location.href='/login';">
+                Login </button>
             {% endif %}
         </div>
     </div>
-    
-<nav class="navbar">
-</nav>
 
+    
+<form action=/search> 
+
+<input type="checkbox" id="search1" class="togle1" >
+    <div id="searchPanel">
+         <label class="search_close" for="search1">
+            &times;
+        </label>
+ 
+     <!-- </div>
+     <div id="searchPanel"> -->
+        <!-- <a href="#" class="search_close">&times;</a> -->
+        
+        <div  class="search_type1">                       
+            <input type="radio" name="type" value="pro" id="pro" onclick="setInputType('text')" required>
+                <label for="pro"> pro</label>
+            <input type="radio" name="type" id="cust" onclick="setInputType('text')" value="cust" required>
+                <label for="cust">cust</label>
+            <input type="radio" name="type" id="req" onclick="setInputType('number')" value="req" required>
+                <label  for="req"> service Reqest id</label>
+        </div>
+        <div class="searchbar flex_button" >
+            <input id="searchbox" name="word" value="{{request.args.get('word', '')}}"  required  placeholder="search">                  
+            |<button id='search_button' type="submit">🔎</button>
+        </div> 
+    </form>
+</div>
+    <script>
+        function setInputType(type) {
+            document.getElementById('searchbox').type = type;
+        }
+    </script>
+    
 {% block body %}{% endblock %} 
-<footer style="background-color: rgb(197, 145, 67);" >
-    <div style="background-color: rgb(197, 145, 67); position: fixed; height: 6%; left: 0; right: 0; bottom: 0; ">
-        <p style=" position: fixed;  left: 10%; right: 0; bottom: 0;" >© 2024 EasyHome. All Rights Reserved.</p>
+<div class="footer1">
+    <div >
+        <p>© 2024 EasyHome. All Rights Reserved.</p>
     
     </div>
-</footer>
+</div>
+
+
+</script>
 </body1>
 </html>
 
-<style> 
-body, html {
-    margin: 0;
-    padding-top: 3%;
-    padding-bottom: 3%;
-    box-sizing: border-box;
-    background: rgb(230, 219, 209);
-}
-/* body1 {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background: antiquewhite;
-} */
-tr:hover {
-        background-color: #d1d8e0;
-    }
-    .action-btn1 {
-    width: 100px; /* Adjust the width as needed */
-    }
-    button:hover {
-        background-color: #1a64b9;
-    }
-
-    table {
-        width: 60%;
-        margin: 20px auto;
-        border-collapse: collapse;
-        font-size: 18px;
-    }
-
-    table, th, td {
-        border: 1px solid #bdc3c7;
-    }
-
-    th {
-        background-color: #3498db;
-        color: white;
-        padding: 10px;
-        font-weight: bold;
-    }
-
-    td {
-        padding: 10px;
-        text-align: center;
-    }
-
-    tr:nth-child(even) {
-        background-color: #ecf0f1;
-    }
-
-    tr:hover {
-        background-color: #d1d8e0;
-    }
-
-    td, th {
-        border-radius: 5px;
-    }
-    .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 80%;
-        padding: 20px;
-    }
-    .container1 {
-            max-width: 1200px;
-            margin: 20px auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            padding: 10px;
-            width: 100%;
-        }
-    .form1 {
-        width: 100%;
-        max-width: 500px; 
-        background: #f9f9f9;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1); 
-    }
-    
-    
-    .form-group {
-        margin-bottom: 15px;
-    }
-    
-    
-    .input-box, .select-box {
-        width: 100%; 
-        padding: 10px;
-        font-size: 1em;
-        border: 1px solid #ddd; 
-        border-radius: 4px;
-        margin-top: 0.3cap;
-    }
-    </style>

@@ -1,10 +1,21 @@
 {% extends "common.html" %}
 {% block body %}
-<div style="margin-left: 10%; margin-right: 10%;">    <h1>Services we offer</h1>
+<div class="flex_button panel">
+
+    <h2> Explore Our Services</h2> 
+    <div style="width: 300px; margin-left: 30px;" class="searchbar flex_button" >
+        <form action="/services" >
+            <input style="width: 250px;"  id="searchbox" name="word" value="{{request.args.get('word', '')}}"  required  placeholder="Search Service">                  
+            |<button style="display: none; margin: 0;" id='search_button' type="submit">🔎</button>
+            <label for="search_button"> 🔎</label>        
+        </form>
+    </div>
+</div> 
     <div class="container1">
         {% for service in services %}
+        
         <div  onclick="window.location.href='/service_page/{{service.service_id}}'" class="service-box">
-            <div class="service-icon">icon</div>
+            <div class="service-icon">{{service.service_id}}</div>
             <div class="service-title"><b style="color: rgb(201, 45, 34);">{{service.service_name}}</b></div>
             <div class="service-desc"><b style="color: rgb(45, 119, 115);">{{service.service_desc}}</b></div>
             <div class="service-desc">  <b style="color: rgb(188, 27, 209);">₹ {{service.service_b_price}}</b></div>
@@ -15,49 +26,4 @@
         {% endfor %}
     </div></div>
 
-<style>
-
-    /* .containerrrs {
-        max-width: 1200px;
-        margin: 20px auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 20px;
-        padding: 10px;
-        width: 100%;
-    } */
-
-    .service-box {
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        text-align: center;
-        transition: transform 0.2s ease;
-    }
-
-    .service-box:hover {
-        transform: scale(1.05);
-    }
-
-    .service-title {
-        font-size: 1.2em;
-        margin-bottom: 10px;
-        font-weight: bold;
-        word-wrap: break-word;
-    }
-
-
-    .service-desc {
-        background-color: #f2a654;
-        color: white;
-        padding: 5px 10px;
-        margin-top: 2px;
-        border-radius: 20px;
-        font-size: 0.9em;
-        word-wrap: break-word;
-    }
-
-
-</style>
 {% endblock %}

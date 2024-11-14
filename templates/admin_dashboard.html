@@ -1,0 +1,101 @@
+{% extends "admin.html" %}
+{% block admin %}
+
+<div class="admin_cont">
+    <div onclick="location.href='/admin_service'" class="admin-box">
+        <h2>
+
+            Services
+        </h2>   
+        <table>
+                
+            <tr>
+                {% for i in req_status  %}
+                    <td>
+                    {{ i.0}}
+                    </td>
+                 {% endfor %}
+            </tr>
+            <tr>
+                {% for i in req_status  %}
+                    <td>
+                    {{ i.1}}
+                    </td>
+              {% endfor %}
+            </tr>
+           
+        </table>
+
+    </div>
+    <div onclick="location.href='/pro'" class="admin-box">
+        <h2>
+            Customers
+        </h2>
+        
+        <table>
+                
+            <tr>
+                {% for i in cust_status  %}
+                    <td>
+                    {{ i.0}}
+                    </td>
+                 {% endfor %}
+            </tr>
+            <tr>
+                {% for i in cust_status  %}
+                    <td>
+                    {{ i.1}}
+                    </td>
+              {% endfor %}
+            </tr>
+           
+        </table>
+    </div>
+    <div onclick="location.href='/cust'" class="admin-box">
+        <h2>
+            Proffessionals
+        </h2>
+            <table>
+                
+                <tr>
+                    {% for i in pro_status  %}
+                        <td>
+                        {{ i.0}}
+                        </td>
+                     {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in pro_status  %}
+                        <td>
+                        {{ i.1}}
+                        </td>
+                  {% endfor %}
+                </tr>
+               
+            </table>
+        
+    </div>
+    <div id="#pros" style=" margin: 10px">
+        <img style="width: 300px; height: 300px; margin: auto;"  src="/static/plots/adminpro1.png" alt="">
+    </div>
+    <div id="#pros" style=" margin: 10px">
+        <img style="width: 300px; height: 300px; margin: auto;"  src="/static/plots/admincust1.png" alt="">
+    </div>
+    <div id="#pros" style=" margin: 10px" >
+        <img style="width: 300px; height: 300px; margin: auto;"  src="/static/plots/adminservices1.png" alt="">
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
