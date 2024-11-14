@@ -11,9 +11,8 @@ import click
 from plot import admin_plot
 
 # defualt admin :- 
-# username = 'admin_iitm' 
-# password = 'admin_pass'
-
+# username = 'jatmanis1' 
+# password = '123'
 
 app = Flask(__name__)
 
