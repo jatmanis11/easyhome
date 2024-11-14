@@ -1,16 +1,15 @@
 **To install**:-
 git clone https://github.com/jatmanis11/easyhome.git
-cd easyhome
+_cd easyhome_
 
 **Install Dependecies**:-
-pip install -r requirements.txt
-
+_pip install -r requirements.txt_
 **Run App**:-
-python -m flask run
+_python -m flask run_
 
 **To create admin Run command**:-
-flask create_superuser
+_flask create_superuser_
 
 **already set admin credentials are**:-
-username: jatmanis1,
-password: 123
+_username: jatmanis1,
+password: 123_
