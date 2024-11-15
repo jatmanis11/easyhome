@@ -478,6 +478,8 @@ def dashboard_user():
     page_p = request.args.get('page_p',1,int)
     page_h = request.args.get('page_h',1,int)
     per_page = 5
+    accept_count_allowed =0
+
     
     # print("sdfsdfs",session['type1'], session)
     if 'type1' in session:
@@ -529,6 +531,12 @@ def dashboard_user():
             # filter(Service_request.req_pro_id==user.pro_id).all()
             # accept_count = Service_request.query(func.count(Service_request.req_id)).filter(and_ (Service_request.req_pro_id == user.pro_id, Service_request.req_status =='Accepted')).scalar()
             accept_count = db.session.query(Service_request.req_status,func.count(Service_request.req_status)).filter(Service_request.req_pro_id == user.pro_id).group_by(Service_request.req_status).all()
+            for i in accept_count: 
+                # print(i)
+                if i[0] =='Accepted':
+                    accept_count_allowed =i[1] 
+
+            
             # print(accept_count,"accept_c")
             # s2 = [i.cust_name_1 for i in s1 ]
             # print(s1, "kwerw")
@@ -563,7 +571,8 @@ def dashboard_user():
             # print("reject")
     # print(typek)
     # print(s1,type(s1))
-    return render_template("dashboard_user.html",user_serv= user_serv,page_p=page_p,page_h=page_h, serv1 = service1,service_history=service_history, service_pending=service_pending,request_created=request_created, type1 = typek ,user= user, accept_count= accept_count)
+    print(accept_count_allowed,'asdf')
+    return render_template("dashboard_user.html",user_serv= user_serv,page_p=page_p,page_h=page_h, serv1 = service1,service_history=service_history, service_pending=service_pending,request_created=request_created, type1 = typek ,user= user, accept_count= accept_count ,accept_count_allowed = accept_count_allowed)
 
 
 @app.route("/services" )

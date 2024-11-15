@@ -358,7 +358,8 @@
                         
                         {% if req.7 =='service requested' %}
                             <td><form action="/dashboard#pend" method="POST"> 
-                                {% if accept_count ==  0 %}
+                                {{accept_count_allowed}}
+                                {% if accept_count_allowed ==  0 %}
                                     <button name="accept" value="{{req.8}}" type="submit">Accept</button>
                                 {% else %}
                                     <button style="cursor: not-allowed ;"> Pending limit reached.</button>
